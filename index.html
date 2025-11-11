@@ -10,6 +10,7 @@
             --secondary: #0066cc;
             --success: #27ae60;
             --danger: #e74c3c;
+            --warning: #f39c12;
             --light: #f8f9fa;
         }
         
@@ -76,10 +77,12 @@
             cursor: pointer;
             font-size: 16px;
             margin: 5px;
+            transition: all 0.3s;
         }
         
         .btn:hover {
             background: #0052a3;
+            transform: translateY(-2px);
         }
         
         .btn-success {
@@ -88,6 +91,14 @@
         
         .btn-success:hover {
             background: #219653;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+        }
+        
+        .btn-warning:hover {
+            background: #e67e22;
         }
         
         table {
@@ -115,6 +126,7 @@
             font-size: 12px;
             max-height: 400px;
             overflow: auto;
+            white-space: pre-wrap;
         }
         
         .hidden {
@@ -144,11 +156,16 @@
             border-radius: 3px;
             cursor: pointer;
             font-size: 12px;
+            transition: all 0.3s;
         }
         
         .delete-btn {
             background: var(--danger);
             color: white;
+        }
+        
+        .delete-btn:hover {
+            background: #c0392b;
         }
         
         .section {
@@ -163,56 +180,154 @@
             padding-bottom: 5px;
             border-bottom: 2px solid var(--secondary);
         }
+        
+        .config-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .form-group select {
+            background: white;
+        }
+        
+        .info-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .alert {
+            padding: 12px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        
+        .alert-success {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .status-ready {
+            background: var(--success);
+        }
+        
+        .status-warning {
+            background: var(--warning);
+        }
+        
+        .status-error {
+            background: var(--danger);
+        }
+        
+        .summary-card {
+            background: #f8f9fa;
+            border-left: 4px solid var(--secondary);
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .config-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .file-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .file-actions {
+                align-self: flex-end;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>Gerador Simples de Lote GNRE</h1>
-            <p>Arraste os XMLs das NF-e e gere automaticamente o lote para GNRE</p>
+            <p>Arraste os XMLs das NF-e - UF Favorecida = UF do Destinatário (automático)</p>
         </header>
 
         <div class="card">
             <div class="section">
-                <div class="section-title">1. Configuração Básica</div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div>
-                        <label><strong>UF Favorecida:</strong></label>
-                        <select id="uf-favorecida" style="width: 100%; padding: 10px; margin-top: 5px;">
-                            <option value="AC">AC</option>
-                            <option value="AL">AL</option>
-                            <option value="AM">AM</option>
-                            <option value="AP">AP</option>
-                            <option value="BA">BA</option>
-                            <option value="CE">CE</option>
-                            <option value="DF">DF</option>
-                            <option value="ES">ES</option>
-                            <option value="GO">GO</option>
-                            <option value="MA">MA</option>
-                            <option value="MG">MG</option>
-                            <option value="MS">MS</option>
-                            <option value="MT">MT</option>
-                            <option value="PA">PA</option>
-                            <option value="PB">PB</option>
-                            <option value="PE">PE</option>
-                            <option value="PI">PI</option>
-                            <option value="PR">PR</option>
-                            <option value="RJ">RJ</option>
-                            <option value="RN">RN</option>
-                            <option value="RO">RO</option>
-                            <option value="RR">RR</option>
-                            <option value="RS">RS</option>
-                            <option value="SC">SC</option>
-                            <option value="SE">SE</option>
-                            <option value="SP">SP</option>
-                            <option value="TO">TO</option>
+                <div class="section-title">1. Configuração</div>
+                <div class="config-grid">
+                    <div class="form-group">
+                        <label for="receita">Receita:</label>
+                        <select id="receita">
+                            <option value="">-- Selecione a Receita --</option>
+                            <option value="100013">100013 - ICMS Comunicação</option>
+                            <option value="100021">100021 - ICMS Energia Elétrica</option>
+                            <option value="100030">100030 - ICMS Transporte</option>
+                            <option value="100048">100048 - ICMS Substituição Tributária por Apuração</option>
+                            <option value="100056" selected>100056 - ICMS Importação</option>
+                            <option value="100064">100064 - ICMS Autuação Fiscal</option>
+                            <option value="100072">100072 - ICMS Parcelamento</option>
+                            <option value="100080">100080 - ICMS Recolhimentos Especiais</option>
+                            <option value="100099">100099 - ICMS Substituição Tributária por Operação</option>
+                            <option value="100102">100102 - ICMS Consumidor Final Não Contribuinte Outra UF por Operação</option>
+                            <option value="100110">100110 - ICMS Consumidor Final Não Contribuinte Outra UF por Apuração</option>
+                            <option value="100129">100129 - ICMS Fundo Estadual de Combate à Pobreza por Operação</option>
+                            <option value="100137">100137 - ICMS Fundo Estadual de Combate à Pobreza por Apuração</option>
+                            <option value="150010">150010 - ICMS Dívida Ativa</option>
+                            <option value="500011">500011 - Multa p/ infração à obrigação acessória</option>
+                            <option value="600016">600016 - Taxa</option>
                         </select>
+                        <div class="info-text">Selecione o código da receita conforme documento fiscal</div>
                     </div>
-                    <div>
-                        <label><strong>Receita:</strong></label>
-                        <input type="text" id="receita" placeholder="Ex: 100056" maxlength="6" 
-                               style="width: 100%; padding: 10px; margin-top: 5px;">
+                    
+                    <div class="form-group">
+                        <label for="periodoReferencia">Período de Referência:</label>
+                        <input type="month" id="periodoReferencia" value="">
+                        <div class="info-text">Mês e ano de referência para a guia</div>
                     </div>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <strong>⚠️ Atenção:</strong> Verifique se a receita selecionada corresponde à operação da NF-e.
                 </div>
             </div>
 
@@ -232,15 +347,26 @@
             </div>
 
             <div class="section">
-                <div class="section-title">3. Dados das Guias Geradas</div>
+                <div class="section-title">3. Guias Geradas Automaticamente</div>
+                
+                <div id="summaryContainer" class="hidden">
+                    <div class="summary-card">
+                        <strong>Resumo do Lote:</strong>
+                        <span id="totalGuias">0</span> guia(s) gerada(s) | 
+                        <span id="totalValor">R$ 0,00</span> valor total
+                    </div>
+                </div>
+                
                 <div id="guiasTableContainer">
                     <table>
                         <thead>
                             <tr>
                                 <th>NF-e</th>
                                 <th>Emitente</th>
+                                <th>Destinatário (UF Favorecida)</th>
                                 <th>Valor</th>
                                 <th>Data Venc.</th>
+                                <th>Status</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
@@ -253,6 +379,7 @@
 
             <div style="text-align: center; margin-top: 20px;">
                 <button class="btn btn-success" id="generateBtn">Gerar XML do Lote GNRE</button>
+                <button class="btn btn-warning" id="validateBtn">Validar Dados</button>
             </div>
         </div>
 
@@ -275,6 +402,7 @@
     <script>
         // Variáveis globais
         let nfesData = [];
+        let configs = JSON.parse(localStorage.getItem('gnreConfigs')) || {};
         
         // Elementos DOM
         const uploadArea = document.getElementById('uploadArea');
@@ -283,21 +411,46 @@
         const filesContainer = document.getElementById('filesContainer');
         const guiasTableBody = document.getElementById('guiasTableBody');
         const generateBtn = document.getElementById('generateBtn');
+        const validateBtn = document.getElementById('validateBtn');
         const resultSection = document.getElementById('resultSection');
         const xmlPreview = document.getElementById('xmlPreview');
         const downloadBtn = document.getElementById('downloadBtn');
         const newBatchBtn = document.getElementById('newBatchBtn');
+        const receitaSelect = document.getElementById('receita');
+        const periodoReferencia = document.getElementById('periodoReferencia');
+        const summaryContainer = document.getElementById('summaryContainer');
+        const totalGuias = document.getElementById('totalGuias');
+        const totalValor = document.getElementById('totalValor');
 
-        // Configuração padrão
-        document.getElementById('uf-favorecida').value = 'DF';
-        document.getElementById('receita').value = '100056';
+        // Inicialização
+        function init() {
+            // Carregar configurações salvas
+            if (configs.receita) {
+                receitaSelect.value = configs.receita;
+            }
+            
+            // Configurar período padrão (mês atual)
+            const now = new Date();
+            periodoReferencia.value = now.toISOString().slice(0, 7);
+            
+            if (configs.periodoReferencia) {
+                periodoReferencia.value = configs.periodoReferencia;
+            }
+            
+            updateGuiasTable();
+        }
 
         // Event Listeners
         uploadArea.addEventListener('click', () => xmlFilesInput.click());
         xmlFilesInput.addEventListener('change', handleFileSelect);
         generateBtn.addEventListener('click', generateXML);
+        validateBtn.addEventListener('click', validateData);
         downloadBtn.addEventListener('click', downloadXML);
         newBatchBtn.addEventListener('click', resetApp);
+        
+        // Salvar configurações quando alteradas
+        receitaSelect.addEventListener('change', saveConfigs);
+        periodoReferencia.addEventListener('change', saveConfigs);
 
         // Drag and Drop
         uploadArea.addEventListener('dragover', (e) => {
@@ -315,6 +468,12 @@
             handleFiles(e.dataTransfer.files);
         });
 
+        function saveConfigs() {
+            configs.receita = receitaSelect.value;
+            configs.periodoReferencia = periodoReferencia.value;
+            localStorage.setItem('gnreConfigs', JSON.stringify(configs));
+        }
+
         function handleFileSelect(e) {
             handleFiles(e.target.files);
         }
@@ -322,11 +481,17 @@
         function handleFiles(files) {
             if (files.length === 0) return;
             
+            let processed = 0;
             Array.from(files).forEach(file => {
                 if (file.name.toLowerCase().endsWith('.xml')) {
                     processXMLFile(file);
+                    processed++;
                 }
             });
+            
+            if (processed === 0) {
+                showAlert('Nenhum arquivo XML válido foi encontrado.', 'error');
+            }
         }
 
         function processXMLFile(file) {
@@ -337,18 +502,29 @@
                     const parser = new DOMParser();
                     const xmlDoc = parser.parseFromString(e.target.result, "text/xml");
                     
+                    // Verificar erros de parsing
+                    const parseError = xmlDoc.getElementsByTagName('parsererror')[0];
+                    if (parseError) {
+                        throw new Error('Erro na estrutura do XML');
+                    }
+                    
                     // Verificar se é uma NF-e
                     if (isNFe(xmlDoc)) {
                         const nfeData = extractNFeData(xmlDoc, file.name);
                         nfesData.push(nfeData);
                         updateFileList();
                         updateGuiasTable();
+                        showAlert(`NF-e ${nfeData.chave} processada com sucesso!`, 'success');
                     } else {
-                        alert(`O arquivo ${file.name} não é uma NF-e válida.`);
+                        showAlert(`O arquivo ${file.name} não é uma NF-e válida.`, 'error');
                     }
                 } catch (error) {
-                    alert(`Erro ao processar ${file.name}: ${error.message}`);
+                    showAlert(`Erro ao processar ${file.name}: ${error.message}`, 'error');
                 }
+            };
+            
+            reader.onerror = function() {
+                showAlert(`Erro na leitura do arquivo ${file.name}`, 'error');
             };
             
             reader.readAsText(file);
@@ -371,6 +547,10 @@
             const destinatario = infNFe.getElementsByTagName('dest')[0];
             const total = infNFe.getElementsByTagName('total')[0];
             
+            // Extrair UFs
+            const ufEmitente = getUF(emitente);
+            const ufDestinatario = getUF(destinatario);
+            
             // Extrair valores
             let valorTotal = '0';
             let valorICMS = '0';
@@ -389,35 +569,85 @@
                 chave = chave.replace('NFe', '');
             }
             
-            // Configurações do usuário
-            const ufFavorecida = document.getElementById('uf-favorecida').value;
-            const receita = document.getElementById('receita').value;
+            // Configurações
+            const receita = receitaSelect.value;
+            const periodo = periodoReferencia.value;
+            const [ano, mes] = periodo.split('-');
             
             // Data de vencimento padrão (30 dias a partir de hoje)
             const dataVencimento = new Date();
             dataVencimento.setDate(dataVencimento.getDate() + 30);
             const dataVencimentoStr = dataVencimento.toISOString().split('T')[0];
             
+            // Validar dados críticos
+            const status = validateNFeData(ufDestinatario, receita, valorTotal);
+            
             return {
                 chave: chave || fileName,
-                ufFavorecida: ufFavorecida,
+                ufFavorecida: ufDestinatario,
                 receita: receita,
                 dataVencimento: dataVencimentoStr,
                 valorPrincipal: valorICMS !== '0' ? valorICMS : valorTotal,
                 valorTotal: valorTotal,
                 documentoOrigem: chave || fileName,
                 tipoDocumentoOrigem: '55',
+                periodo: {
+                    mes: mes,
+                    ano: ano
+                },
                 emitente: {
                     razaoSocial: emitente?.getElementsByTagName('xNome')[0]?.textContent || 'Emitente NF-e',
-                    cnpj: emitente?.getElementsByTagName('CNPJ')[0]?.textContent || '',
-                    ie: emitente?.getElementsByTagName('IE')[0]?.textContent || ''
+                    cnpj: emitente?.getElementsByTagName('CNPJ')[0]?.textContent || emitente?.getElementsByTagName('CPF')[0]?.textContent || '',
+                    ie: emitente?.getElementsByTagName('IE')[0]?.textContent || '',
+                    uf: ufEmitente
                 },
                 destinatario: {
                     razaoSocial: destinatario?.getElementsByTagName('xNome')[0]?.textContent || '',
-                    cnpj: destinatario?.getElementsByTagName('CNPJ')[0]?.textContent || ''
+                    cnpj: destinatario?.getElementsByTagName('CNPJ')[0]?.textContent || destinatario?.getElementsByTagName('CPF')[0]?.textContent || '',
+                    uf: ufDestinatario
                 },
-                fileName: fileName
+                fileName: fileName,
+                status: status
             };
+        }
+
+        function validateNFeData(ufFavorecida, receita, valor) {
+            if (!ufFavorecida || ufFavorecida.length !== 2) {
+                return 'error';
+            }
+            if (!receita) {
+                return 'error';
+            }
+            if (!valor || parseFloat(valor) <= 0) {
+                return 'warning';
+            }
+            return 'ready';
+        }
+
+        function getUF(element) {
+            if (!element) return '';
+            
+            const uf = element.getElementsByTagName('UF')[0]?.textContent || 
+                      element.getElementsByTagName('cUF')[0]?.textContent ||
+                      '';
+            
+            if (uf && !isNaN(uf)) {
+                return convertCodigoUFparaSigla(uf);
+            }
+            
+            return uf;
+        }
+
+        function convertCodigoUFparaSigla(codigo) {
+            const ufs = {
+                '12': 'AC', '27': 'AL', '16': 'AM', '13': 'AP', '29': 'BA',
+                '23': 'CE', '53': 'DF', '32': 'ES', '52': 'GO', '21': 'MA',
+                '31': 'MG', '50': 'MS', '51': 'MT', '15': 'PA', '25': 'PB',
+                '41': 'PR', '26': 'PE', '22': 'PI', '33': 'RJ', '24': 'RN',
+                '43': 'RS', '11': 'RO', '14': 'RR', '42': 'SC', '35': 'SP',
+                '28': 'SE', '17': 'TO'
+            };
+            return ufs[codigo] || codigo;
         }
 
         function updateFileList() {
@@ -436,8 +666,10 @@
                     <div class="file-info">
                         <strong>${nfe.fileName}</strong>
                         <div style="font-size: 12px; color: #666;">
-                            NF-e: ${nfe.chave.substring(0, 20)}... | 
-                            Valor: R$ ${parseFloat(nfe.valorTotal).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                            ${nfe.emitente.uf} → ${nfe.destinatario.uf} | 
+                            Valor: R$ ${parseFloat(nfe.valorTotal).toLocaleString('pt-BR', {minimumFractionDigits: 2})} |
+                            <span class="status-indicator status-${nfe.status}"></span>
+                            ${getStatusText(nfe.status)}
                         </div>
                     </div>
                     <div class="file-actions">
@@ -448,14 +680,35 @@
             });
         }
 
+        function getStatusText(status) {
+            switch(status) {
+                case 'ready': return 'Pronto';
+                case 'warning': return 'Atenção';
+                case 'error': return 'Erro';
+                default: return 'Desconhecido';
+            }
+        }
+
         function updateGuiasTable() {
             guiasTableBody.innerHTML = '';
             
+            if (nfesData.length === 0) {
+                summaryContainer.classList.add('hidden');
+                return;
+            }
+            
+            summaryContainer.classList.remove('hidden');
+            
+            let valorTotalLote = 0;
+            
             nfesData.forEach((nfe, index) => {
+                valorTotalLote += parseFloat(nfe.valorTotal);
+                
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${nfe.chave.substring(0, 15)}...</td>
-                    <td>${nfe.emitente.razaoSocial.substring(0, 20)}...</td>
+                    <td>${nfe.emitente.razaoSocial.substring(0, 15)}... (${nfe.emitente.uf})</td>
+                    <td><strong>${nfe.destinatario.razaoSocial ? nfe.destinatario.razaoSocial.substring(0, 15) + '...' : 'Destinatário'} (${nfe.ufFavorecida})</strong></td>
                     <td>R$ ${parseFloat(nfe.valorTotal).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
                     <td>
                         <input type="date" value="${nfe.dataVencimento}" 
@@ -463,11 +716,19 @@
                                style="padding: 5px; border: 1px solid #ddd; border-radius: 3px;">
                     </td>
                     <td>
+                        <span class="status-indicator status-${nfe.status}"></span>
+                        ${getStatusText(nfe.status)}
+                    </td>
+                    <td>
                         <button class="action-btn delete-btn" onclick="removeNFe(${index})">❌</button>
                     </td>
                 `;
                 guiasTableBody.appendChild(row);
             });
+            
+            // Atualizar resumo
+            totalGuias.textContent = nfesData.length;
+            totalValor.textContent = `R$ ${valorTotalLote.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
         }
 
         function removeNFe(index) {
@@ -480,17 +741,62 @@
             nfesData[index].dataVencimento = newDate;
         }
 
-        function generateXML() {
+        function validateData() {
             if (nfesData.length === 0) {
-                alert('Por favor, importe pelo menos uma NF-e antes de gerar o XML.');
+                showAlert('Nenhuma NF-e carregada para validação.', 'warning');
                 return;
             }
             
-            const ufFavorecida = document.getElementById('uf-favorecida').value;
-            const receita = document.getElementById('receita').value;
+            const errors = [];
+            const warnings = [];
             
-            if (!ufFavorecida || !receita) {
-                alert('Por favor, configure a UF Favorecida e a Receita.');
+            nfesData.forEach((nfe, index) => {
+                if (!nfe.ufFavorecida || nfe.ufFavorecida.length !== 2) {
+                    errors.push(`NF-e ${nfe.chave}: UF favorecida inválida`);
+                }
+                if (!nfe.receita) {
+                    errors.push(`NF-e ${nfe.chave}: Receita não selecionada`);
+                }
+                if (!nfe.emitente.cnpj) {
+                    warnings.push(`NF-e ${nfe.chave}: CNPJ do emitente não encontrado`);
+                }
+                if (parseFloat(nfe.valorTotal) <= 0) {
+                    warnings.push(`NF-e ${nfe.chave}: Valor total zerado ou negativo`);
+                }
+            });
+            
+            let message = '';
+            if (errors.length > 0) {
+                message += `<strong>Erros críticos:</strong><br>${errors.join('<br>')}`;
+            }
+            if (warnings.length > 0) {
+                if (message) message += '<br><br>';
+                message += `<strong>Atenção:</strong><br>${warnings.join('<br>')}`;
+            }
+            if (!message) {
+                message = 'Todas as guias estão válidas e prontas para geração!';
+            }
+            
+            showAlert(message, errors.length > 0 ? 'error' : (warnings.length > 0 ? 'warning' : 'success'));
+        }
+
+        function generateXML() {
+            if (nfesData.length === 0) {
+                showAlert('Por favor, importe pelo menos uma NF-e antes de gerar o XML.', 'error');
+                return;
+            }
+            
+            const receita = receitaSelect.value;
+            
+            if (!receita) {
+                showAlert('Por favor, selecione a Receita.', 'error');
+                return;
+            }
+            
+            // Validar dados antes de gerar
+            const hasErrors = nfesData.some(nfe => nfe.status === 'error');
+            if (hasErrors) {
+                showAlert('Existem erros nas guias. Corrija-os antes de gerar o XML.', 'error');
                 return;
             }
             
@@ -509,8 +815,8 @@
                 xmlContent += `      <c28_tipoDocOrigem>${nfe.tipoDocumentoOrigem}</c28_tipoDocOrigem>\n`;
                 xmlContent += `      <c05_referencia>\n`;
                 xmlContent += `        <codigo>0</codigo>\n`;
-                xmlContent += `        <mes>${String(new Date().getMonth() + 1).padStart(2, '0')}</mes>\n`;
-                xmlContent += `        <ano>${new Date().getFullYear()}</ano>\n`;
+                xmlContent += `        <mes>${nfe.periodo.mes}</mes>\n`;
+                xmlContent += `        <ano>${nfe.periodo.ano}</ano>\n`;
                 xmlContent += `      </c05_referencia>\n`;
                 xmlContent += `      <c06_valorPrincipal>${parseFloat(nfe.valorPrincipal).toFixed(2)}</c06_valorPrincipal>\n`;
                 xmlContent += `      <c10_valorTotal>${parseFloat(nfe.valorTotal).toFixed(2)}</c10_valorTotal>\n`;
@@ -532,8 +838,13 @@
             resultSection.classList.remove('hidden');
             window.generatedXML = xmlContent;
             
+            // Salvar configurações
+            saveConfigs();
+            
             // Rolagem para o resultado
             resultSection.scrollIntoView({ behavior: 'smooth' });
+            
+            showAlert('XML gerado com sucesso! Clique em "Baixar Arquivo XML" para salvar.', 'success');
         }
 
         function escapeXML(text) {
@@ -566,10 +877,33 @@
             fileList.classList.add('hidden');
             resultSection.classList.add('hidden');
             updateGuiasTable();
+            showAlert('Aplicação reiniciada. Você pode começar um novo lote.', 'success');
+        }
+
+        function showAlert(message, type = 'info') {
+            // Remover alertas anteriores
+            const existingAlerts = document.querySelectorAll('.alert');
+            existingAlerts.forEach(alert => alert.remove());
+            
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.innerHTML = message;
+            
+            // Inserir após o header
+            document.querySelector('.container').insertBefore(alert, document.querySelector('.card'));
+            
+            // Auto-remover após 10 segundos para mensagens de sucesso/info
+            if (type === 'success' || type === 'info') {
+                setTimeout(() => {
+                    if (alert.parentNode) {
+                        alert.remove();
+                    }
+                }, 10000);
+            }
         }
 
         // Inicialização
-        updateGuiasTable();
+        init();
     </script>
 </body>
 </html>
