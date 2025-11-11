@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador Simples de Lote GNRE</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #0066cc;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --light: #f8f9fa;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--secondary);
+            background: #f0f8ff;
+        }
+        
+        .upload-area.dragover {
+            border-color: var(--secondary);
+            background: #e6f3ff;
+        }
+        
+        .btn {
+            background: var(--secondary);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        
+        .btn:hover {
+            background: #0052a3;
+        }
+        
+        .btn-success {
+            background: var(--success);
+        }
+        
+        .btn-success:hover {
+            background: #219653;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background: var(--light);
+        }
+        
+        .xml-preview {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow: auto;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .file-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .file-info {
+            flex: 1;
+        }
+        
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .delete-btn {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--primary);
+            padding-bottom: 5px;
+            border-bottom: 2px solid var(--secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Gerador Simples de Lote GNRE</h1>
+            <p>Arraste os XMLs das NF-e e gere automaticamente o lote para GNRE</p>
+        </header>
+
+        <div class="card">
+            <div class="section">
+                <div class="section-title">1. Configuração Básica</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label><strong>UF Favorecida:</strong></label>
+                        <select id="uf-favorecida" style="width: 100%; padding: 10px; margin-top: 5px;">
+                            <option value="AC">AC</option>
+                            <option value="AL">AL</option>
+                            <option value="AM">AM</option>
+                            <option value="AP">AP</option>
+                            <option value="BA">BA</option>
+                            <option value="CE">CE</option>
+                            <option value="DF">DF</option>
+                            <option value="ES">ES</option>
+                            <option value="GO">GO</option>
+                            <option value="MA">MA</option>
+                            <option value="MG">MG</option>
+                            <option value="MS">MS</option>
+                            <option value="MT">MT</option>
+                            <option value="PA">PA</option>
+                            <option value="PB">PB</option>
+                            <option value="PE">PE</option>
+                            <option value="PI">PI</option>
+                            <option value="PR">PR</option>
+                            <option value="RJ">RJ</option>
+                            <option value="RN">RN</option>
+                            <option value="RO">RO</option>
+                            <option value="RR">RR</option>
+                            <option value="RS">RS</option>
+                            <option value="SC">SC</option>
+                            <option value="SE">SE</option>
+                            <option value="SP">SP</option>
+                            <option value="TO">TO</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label><strong>Receita:</strong></label>
+                        <input type="text" id="receita" placeholder="Ex: 100056" maxlength="6" 
+                               style="width: 100%; padding: 10px; margin-top: 5px;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">2. Importar XMLs das NF-e</div>
+                <div class="upload-area" id="uploadArea">
+                    <div style="font-size: 48px; margin-bottom: 10px;">📁</div>
+                    <h3>Arraste os XMLs das Notas Fiscais aqui</h3>
+                    <p>ou clique para selecionar os arquivos</p>
+                    <input type="file" id="xmlFiles" accept=".xml" multiple style="display: none;">
+                </div>
+                
+                <div id="fileList" class="hidden">
+                    <div class="section-title">Arquivos Carregados</div>
+                    <div id="filesContainer"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">3. Dados das Guias Geradas</div>
+                <div id="guiasTableContainer">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>NF-e</th>
+                                <th>Emitente</th>
+                                <th>Valor</th>
+                                <th>Data Venc.</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="guiasTableBody">
+                            <!-- Dados serão preenchidos automaticamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-success" id="generateBtn">Gerar XML do Lote GNRE</button>
+            </div>
+        </div>
+
+        <div class="card hidden" id="resultSection">
+            <div class="section">
+                <div class="section-title">XML Gerado com Sucesso!</div>
+                <p>O arquivo está pronto para importação no sistema GNRE.</p>
+                
+                <div style="margin: 20px 0;">
+                    <button class="btn btn-success" id="downloadBtn">📥 Baixar Arquivo XML</button>
+                    <button class="btn" id="newBatchBtn">🔄 Novo Lote</button>
+                </div>
+                
+                <div class="section-title">Prévia do XML:</div>
+                <div class="xml-preview" id="xmlPreview"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variáveis globais
+        let nfesData = [];
+        
+        // Elementos DOM
+        const uploadArea = document.getElementById('uploadArea');
+        const xmlFilesInput = document.getElementById('xmlFiles');
+        const fileList = document.getElementById('fileList');
+        const filesContainer = document.getElementById('filesContainer');
+        const guiasTableBody = document.getElementById('guiasTableBody');
+        const generateBtn = document.getElementById('generateBtn');
+        const resultSection = document.getElementById('resultSection');
+        const xmlPreview = document.getElementById('xmlPreview');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const newBatchBtn = document.getElementById('newBatchBtn');
+
+        // Configuração padrão
+        document.getElementById('uf-favorecida').value = 'DF';
+        document.getElementById('receita').value = '100056';
+
+        // Event Listeners
+        uploadArea.addEventListener('click', () => xmlFilesInput.click());
+        xmlFilesInput.addEventListener('change', handleFileSelect);
+        generateBtn.addEventListener('click', generateXML);
+        downloadBtn.addEventListener('click', downloadXML);
+        newBatchBtn.addEventListener('click', resetApp);
+
+        // Drag and Drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        function handleFileSelect(e) {
+            handleFiles(e.target.files);
+        }
+
+        function handleFiles(files) {
+            if (files.length === 0) return;
+            
+            Array.from(files).forEach(file => {
+                if (file.name.toLowerCase().endsWith('.xml')) {
+                    processXMLFile(file);
+                }
+            });
+        }
+
+        function processXMLFile(file) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(e.target.result, "text/xml");
+                    
+                    // Verificar se é uma NF-e
+                    if (isNFe(xmlDoc)) {
+                        const nfeData = extractNFeData(xmlDoc, file.name);
+                        nfesData.push(nfeData);
+                        updateFileList();
+                        updateGuiasTable();
+                    } else {
+                        alert(`O arquivo ${file.name} não é uma NF-e válida.`);
+                    }
+                } catch (error) {
+                    alert(`Erro ao processar ${file.name}: ${error.message}`);
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+
+        function isNFe(xmlDoc) {
+            return xmlDoc.getElementsByTagName('nfeProc').length > 0 || 
+                   xmlDoc.getElementsByTagName('NFe').length > 0 ||
+                   xmlDoc.documentElement.tagName === 'nfeProc' ||
+                   xmlDoc.documentElement.tagName === 'NFe';
+        }
+
+        function extractNFeData(xmlDoc, fileName) {
+            // Encontrar a raiz da NF-e
+            const nfeProc = xmlDoc.getElementsByTagName('nfeProc')[0] || xmlDoc.documentElement;
+            const infNFe = nfeProc.getElementsByTagName('infNFe')[0] || nfeProc;
+            
+            // Extrair dados básicos
+            const emitente = infNFe.getElementsByTagName('emit')[0];
+            const destinatario = infNFe.getElementsByTagName('dest')[0];
+            const total = infNFe.getElementsByTagName('total')[0];
+            
+            // Extrair valores
+            let valorTotal = '0';
+            let valorICMS = '0';
+            
+            if (total) {
+                const icmsTotal = total.getElementsByTagName('ICMSTot')[0];
+                if (icmsTotal) {
+                    valorTotal = icmsTotal.getElementsByTagName('vNF')[0]?.textContent || '0';
+                    valorICMS = icmsTotal.getElementsByTagName('vICMS')[0]?.textContent || '0';
+                }
+            }
+            
+            // Extrair chave da NFe
+            let chave = infNFe.getAttribute('Id') || '';
+            if (chave && chave.startsWith('NFe')) {
+                chave = chave.replace('NFe', '');
+            }
+            
+            // Configurações do usuário
+            const ufFavorecida = document.getElementById('uf-favorecida').value;
+            const receita = document.getElementById('receita').value;
+            
+            // Data de vencimento padrão (30 dias a partir de hoje)
+            const dataVencimento = new Date();
+            dataVencimento.setDate(dataVencimento.getDate() + 30);
+            const dataVencimentoStr = dataVencimento.toISOString().split('T')[0];
+            
+            return {
+                chave: chave || fileName,
+                ufFavorecida: ufFavorecida,
+                receita: receita,
+                dataVencimento: dataVencimentoStr,
+                valorPrincipal: valorICMS !== '0' ? valorICMS : valorTotal,
+                valorTotal: valorTotal,
+                documentoOrigem: chave || fileName,
+                tipoDocumentoOrigem: '55',
+                emitente: {
+                    razaoSocial: emitente?.getElementsByTagName('xNome')[0]?.textContent || 'Emitente NF-e',
+                    cnpj: emitente?.getElementsByTagName('CNPJ')[0]?.textContent || '',
+                    ie: emitente?.getElementsByTagName('IE')[0]?.textContent || ''
+                },
+                destinatario: {
+                    razaoSocial: destinatario?.getElementsByTagName('xNome')[0]?.textContent || '',
+                    cnpj: destinatario?.getElementsByTagName('CNPJ')[0]?.textContent || ''
+                },
+                fileName: fileName
+            };
+        }
+
+        function updateFileList() {
+            if (nfesData.length === 0) {
+                fileList.classList.add('hidden');
+                return;
+            }
+            
+            fileList.classList.remove('hidden');
+            filesContainer.innerHTML = '';
+            
+            nfesData.forEach((nfe, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div class="file-info">
+                        <strong>${nfe.fileName}</strong>
+                        <div style="font-size: 12px; color: #666;">
+                            NF-e: ${nfe.chave.substring(0, 20)}... | 
+                            Valor: R$ ${parseFloat(nfe.valorTotal).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                        </div>
+                    </div>
+                    <div class="file-actions">
+                        <button class="action-btn delete-btn" onclick="removeNFe(${index})">Remover</button>
+                    </div>
+                `;
+                filesContainer.appendChild(fileItem);
+            });
+        }
+
+        function updateGuiasTable() {
+            guiasTableBody.innerHTML = '';
+            
+            nfesData.forEach((nfe, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${nfe.chave.substring(0, 15)}...</td>
+                    <td>${nfe.emitente.razaoSocial.substring(0, 20)}...</td>
+                    <td>R$ ${parseFloat(nfe.valorTotal).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td>
+                        <input type="date" value="${nfe.dataVencimento}" 
+                               onchange="updateVencimento(${index}, this.value)" 
+                               style="padding: 5px; border: 1px solid #ddd; border-radius: 3px;">
+                    </td>
+                    <td>
+                        <button class="action-btn delete-btn" onclick="removeNFe(${index})">❌</button>
+                    </td>
+                `;
+                guiasTableBody.appendChild(row);
+            });
+        }
+
+        function removeNFe(index) {
+            nfesData.splice(index, 1);
+            updateFileList();
+            updateGuiasTable();
+        }
+
+        function updateVencimento(index, newDate) {
+            nfesData[index].dataVencimento = newDate;
+        }
+
+        function generateXML() {
+            if (nfesData.length === 0) {
+                alert('Por favor, importe pelo menos uma NF-e antes de gerar o XML.');
+                return;
+            }
+            
+            const ufFavorecida = document.getElementById('uf-favorecida').value;
+            const receita = document.getElementById('receita').value;
+            
+            if (!ufFavorecida || !receita) {
+                alert('Por favor, configure a UF Favorecida e a Receita.');
+                return;
+            }
+            
+            let xmlContent = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+            xmlContent += `<TLote_GNRE xmlns="http://www.gnre.pe.gov.br" versao="2.00">\n`;
+            xmlContent += `  <guias>\n`;
+            
+            nfesData.forEach(nfe => {
+                xmlContent += `    <TDadosGNRE versao="2.00">\n`;
+                xmlContent += `      <c01_UfFavorecida>${nfe.ufFavorecida}</c01_UfFavorecida>\n`;
+                xmlContent += `      <c02_receita>${nfe.receita}</c02_receita>\n`;
+                xmlContent += `      <c03_idContribuinteEmitente>\n`;
+                xmlContent += `        <CNPJ>${nfe.emitente.cnpj}</CNPJ>\n`;
+                xmlContent += `      </c03_idContribuinteEmitente>\n`;
+                xmlContent += `      <c04_docOrigem>${nfe.documentoOrigem}</c04_docOrigem>\n`;
+                xmlContent += `      <c28_tipoDocOrigem>${nfe.tipoDocumentoOrigem}</c28_tipoDocOrigem>\n`;
+                xmlContent += `      <c05_referencia>\n`;
+                xmlContent += `        <codigo>0</codigo>\n`;
+                xmlContent += `        <mes>${String(new Date().getMonth() + 1).padStart(2, '0')}</mes>\n`;
+                xmlContent += `        <ano>${new Date().getFullYear()}</ano>\n`;
+                xmlContent += `      </c05_referencia>\n`;
+                xmlContent += `      <c06_valorPrincipal>${parseFloat(nfe.valorPrincipal).toFixed(2)}</c06_valorPrincipal>\n`;
+                xmlContent += `      <c10_valorTotal>${parseFloat(nfe.valorTotal).toFixed(2)}</c10_valorTotal>\n`;
+                xmlContent += `      <c14_dataVencimento>${nfe.dataVencimento}</c14_dataVencimento>\n`;
+                xmlContent += `      <c16_razaoSocialEmitente>${escapeXML(nfe.emitente.razaoSocial)}</c16_razaoSocialEmitente>\n`;
+                
+                if (nfe.emitente.ie) {
+                    xmlContent += `      <c17_inscricaoEstadualEmitente>${nfe.emitente.ie}</c17_inscricaoEstadualEmitente>\n`;
+                }
+                
+                xmlContent += `    </TDadosGNRE>\n`;
+            });
+            
+            xmlContent += `  </guias>\n`;
+            xmlContent += `</TLote_GNRE>`;
+            
+            // Mostrar resultado
+            xmlPreview.textContent = xmlContent;
+            resultSection.classList.remove('hidden');
+            window.generatedXML = xmlContent;
+            
+            // Rolagem para o resultado
+            resultSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function escapeXML(text) {
+            if (!text) return '';
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&apos;');
+        }
+
+        function downloadXML() {
+            if (!window.generatedXML) return;
+            
+            const blob = new Blob([window.generatedXML], { type: 'application/xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `lote_gnre_${new Date().toISOString().slice(0, 10)}.xml`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function resetApp() {
+            nfesData = [];
+            xmlFilesInput.value = '';
+            fileList.classList.add('hidden');
+            resultSection.classList.add('hidden');
+            updateGuiasTable();
+        }
+
+        // Inicialização
+        updateGuiasTable();
+    </script>
+</body>
+</html>
