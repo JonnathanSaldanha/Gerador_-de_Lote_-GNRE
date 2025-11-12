@@ -27,7 +27,7 @@
         }
         
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
         }
         
@@ -105,16 +105,21 @@
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
+            font-size: 14px;
         }
         
         th, td {
-            padding: 12px;
+            padding: 10px 8px;
             text-align: left;
             border-bottom: 1px solid #ddd;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
         th {
             background: var(--light);
+            font-weight: 600;
         }
         
         .xml-preview {
@@ -183,8 +188,9 @@
         
         .config-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            max-width: 400px;
         }
         
         .form-group {
@@ -267,6 +273,33 @@
             margin: 15px 0;
         }
         
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        .nfe-number {
+            font-family: monospace;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .company-name {
+            max-width: 120px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .valor-cell {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .valor-guia {
+            color: var(--success);
+            font-weight: bold;
+        }
+        
         @media (max-width: 768px) {
             .config-grid {
                 grid-template-columns: 1fr;
@@ -280,6 +313,14 @@
             
             .file-actions {
                 align-self: flex-end;
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            th, td {
+                padding: 8px 5px;
             }
         }
     </style>
@@ -303,11 +344,11 @@
                             <option value="100021">100021 - ICMS Energia Elétrica</option>
                             <option value="100030">100030 - ICMS Transporte</option>
                             <option value="100048">100048 - ICMS Substituição Tributária por Apuração</option>
-                            <option value="100056" selected>100056 - ICMS Importação</option>
+                            <option value="100056">100056 - ICMS Importação</option>
                             <option value="100064">100064 - ICMS Autuação Fiscal</option>
                             <option value="100072">100072 - ICMS Parcelamento</option>
                             <option value="100080">100080 - ICMS Recolhimentos Especiais</option>
-                            <option value="100099">100099 - ICMS Substituição Tributária por Operação</option>
+                            <option value="100099" selected>100099 - ICMS Substituição Tributária por Operação</option>
                             <option value="100102">100102 - ICMS Consumidor Final Não Contribuinte Outra UF por Operação</option>
                             <option value="100110">100110 - ICMS Consumidor Final Não Contribuinte Outra UF por Apuração</option>
                             <option value="100129">100129 - ICMS Fundo Estadual de Combate à Pobreza por Operação</option>
@@ -318,16 +359,10 @@
                         </select>
                         <div class="info-text">Selecione o código da receita conforme documento fiscal</div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="periodoReferencia">Período de Referência:</label>
-                        <input type="month" id="periodoReferencia" value="">
-                        <div class="info-text">Mês e ano de referência para a guia</div>
-                    </div>
                 </div>
                 
                 <div class="alert alert-warning">
-                    <strong>⚠️ Atenção:</strong> Verifique se a receita selecionada corresponde à operação da NF-e.
+                    <strong>⚠️ Atenção:</strong> Para Substituição Tributária, o valor da guia será o <strong>ICMS ST</strong> encontrado no XML.
                 </div>
             </div>
 
@@ -353,21 +388,23 @@
                     <div class="summary-card">
                         <strong>Resumo do Lote:</strong>
                         <span id="totalGuias">0</span> guia(s) gerada(s) | 
-                        <span id="totalValor">R$ 0,00</span> valor total
+                        Valor Total NF-e: <span id="totalValorNFe">R$ 0,00</span> |
+                        Valor Total Guias: <span id="totalValorGuia" class="valor-guia">R$ 0,00</span>
                     </div>
                 </div>
                 
-                <div id="guiasTableContainer">
+                <div class="table-container">
                     <table>
                         <thead>
                             <tr>
-                                <th>NF-e</th>
-                                <th>Emitente</th>
-                                <th>Destinatário (UF Favorecida)</th>
-                                <th>Valor</th>
-                                <th>Data Venc.</th>
-                                <th>Status</th>
-                                <th>Ações</th>
+                                <th width="120">NF-e</th>
+                                <th width="150">Emitente</th>
+                                <th width="180">Destinatário (UF Favorecida)</th>
+                                <th width="120">Valor NF-e</th>
+                                <th width="120">Valor Guia (ICMS ST)</th>
+                                <th width="110">Data Venc.</th>
+                                <th width="80">Status</th>
+                                <th width="60">Ações</th>
                             </tr>
                         </thead>
                         <tbody id="guiasTableBody">
@@ -417,24 +454,16 @@
         const downloadBtn = document.getElementById('downloadBtn');
         const newBatchBtn = document.getElementById('newBatchBtn');
         const receitaSelect = document.getElementById('receita');
-        const periodoReferencia = document.getElementById('periodoReferencia');
         const summaryContainer = document.getElementById('summaryContainer');
         const totalGuias = document.getElementById('totalGuias');
-        const totalValor = document.getElementById('totalValor');
+        const totalValorNFe = document.getElementById('totalValorNFe');
+        const totalValorGuia = document.getElementById('totalValorGuia');
 
         // Inicialização
         function init() {
             // Carregar configurações salvas
             if (configs.receita) {
                 receitaSelect.value = configs.receita;
-            }
-            
-            // Configurar período padrão (mês atual)
-            const now = new Date();
-            periodoReferencia.value = now.toISOString().slice(0, 7);
-            
-            if (configs.periodoReferencia) {
-                periodoReferencia.value = configs.periodoReferencia;
             }
             
             updateGuiasTable();
@@ -450,7 +479,6 @@
         
         // Salvar configurações quando alteradas
         receitaSelect.addEventListener('change', saveConfigs);
-        periodoReferencia.addEventListener('change', saveConfigs);
 
         // Drag and Drop
         uploadArea.addEventListener('dragover', (e) => {
@@ -470,7 +498,6 @@
 
         function saveConfigs() {
             configs.receita = receitaSelect.value;
-            configs.periodoReferencia = periodoReferencia.value;
             localStorage.setItem('gnreConfigs', JSON.stringify(configs));
         }
 
@@ -514,7 +541,7 @@
                         nfesData.push(nfeData);
                         updateFileList();
                         updateGuiasTable();
-                        showAlert(`NF-e ${nfeData.chave} processada com sucesso!`, 'success');
+                        showAlert(`NF-e ${nfeData.numero} processada com sucesso!`, 'success');
                     } else {
                         showAlert(`O arquivo ${file.name} não é uma NF-e válida.`, 'error');
                     }
@@ -546,49 +573,73 @@
             const emitente = infNFe.getElementsByTagName('emit')[0];
             const destinatario = infNFe.getElementsByTagName('dest')[0];
             const total = infNFe.getElementsByTagName('total')[0];
+            const ide = infNFe.getElementsByTagName('ide')[0];
             
             // Extrair UFs
             const ufEmitente = getUF(emitente);
             const ufDestinatario = getUF(destinatario);
             
-            // Extrair valores
+            // Extrair valores - CORREÇÃO: Buscar ICMS ST no campo correto
             let valorTotal = '0';
-            let valorICMS = '0';
+            let valorICMSST = '0';
             
             if (total) {
                 const icmsTotal = total.getElementsByTagName('ICMSTot')[0];
                 if (icmsTotal) {
                     valorTotal = icmsTotal.getElementsByTagName('vNF')[0]?.textContent || '0';
-                    valorICMS = icmsTotal.getElementsByTagName('vICMS')[0]?.textContent || '0';
+                    
+                    // CORREÇÃO: Buscar o valor do ICMS ST no campo <vST>
+                    valorICMSST = icmsTotal.getElementsByTagName('vST')[0]?.textContent || '0';
+                    
+                    console.log('Valores encontrados:', {
+                        valorTotal,
+                        valorICMSST,
+                        vST: icmsTotal.getElementsByTagName('vST')[0]?.textContent,
+                        vICMSST: icmsTotal.getElementsByTagName('vICMSST')[0]?.textContent
+                    });
                 }
             }
             
-            // Extrair chave da NFe
+            // Extrair chave e número da NFe
             let chave = infNFe.getAttribute('Id') || '';
             if (chave && chave.startsWith('NFe')) {
                 chave = chave.replace('NFe', '');
             }
             
+            // Extrair número da NF-e (últimos 9 dígitos da chave)
+            let numero = '';
+            if (chave && chave.length >= 9) {
+                numero = chave.substring(chave.length - 9);
+            } else {
+                // Tentar extrair do elemento nNF
+                numero = ide?.getElementsByTagName('nNF')[0]?.textContent || chave || fileName;
+            }
+            
             // Configurações
             const receita = receitaSelect.value;
-            const periodo = periodoReferencia.value;
-            const [ano, mes] = periodo.split('-');
             
             // Data de vencimento padrão (30 dias a partir de hoje)
             const dataVencimento = new Date();
             dataVencimento.setDate(dataVencimento.getDate() + 30);
             const dataVencimentoStr = dataVencimento.toISOString().split('T')[0];
             
+            // Período atual para referência
+            const now = new Date();
+            const mes = String(now.getMonth() + 1).padStart(2, '0');
+            const ano = now.getFullYear();
+            
             // Validar dados críticos
-            const status = validateNFeData(ufDestinatario, receita, valorTotal);
+            const status = validateNFeData(ufDestinatario, receita, valorICMSST);
             
             return {
-                chave: chave || fileName,
+                chave: chave,
+                numero: numero,
                 ufFavorecida: ufDestinatario,
                 receita: receita,
                 dataVencimento: dataVencimentoStr,
-                valorPrincipal: valorICMS !== '0' ? valorICMS : valorTotal,
+                valorPrincipal: valorICMSST, // AGORA USA ICMS ST CORRETAMENTE
                 valorTotal: valorTotal,
+                valorICMSST: valorICMSST,
                 documentoOrigem: chave || fileName,
                 tipoDocumentoOrigem: '55',
                 periodo: {
@@ -611,14 +662,14 @@
             };
         }
 
-        function validateNFeData(ufFavorecida, receita, valor) {
+        function validateNFeData(ufFavorecida, receita, valorICMSST) {
             if (!ufFavorecida || ufFavorecida.length !== 2) {
                 return 'error';
             }
             if (!receita) {
                 return 'error';
             }
-            if (!valor || parseFloat(valor) <= 0) {
+            if (!valorICMSST || parseFloat(valorICMSST) <= 0) {
                 return 'warning';
             }
             return 'ready';
@@ -667,7 +718,8 @@
                         <strong>${nfe.fileName}</strong>
                         <div style="font-size: 12px; color: #666;">
                             ${nfe.emitente.uf} → ${nfe.destinatario.uf} | 
-                            Valor: R$ ${parseFloat(nfe.valorTotal).toLocaleString('pt-BR', {minimumFractionDigits: 2})} |
+                            Valor NF-e: R$ ${parseFloat(nfe.valorTotal).toLocaleString('pt-BR', {minimumFractionDigits: 2})} |
+                            ICMS ST: R$ ${parseFloat(nfe.valorICMSST).toLocaleString('pt-BR', {minimumFractionDigits: 2})} |
                             <span class="status-indicator status-${nfe.status}"></span>
                             ${getStatusText(nfe.status)}
                         </div>
@@ -699,28 +751,41 @@
             
             summaryContainer.classList.remove('hidden');
             
-            let valorTotalLote = 0;
+            let valorTotalNFe = 0;
+            let valorTotalGuia = 0;
             
             nfesData.forEach((nfe, index) => {
-                valorTotalLote += parseFloat(nfe.valorTotal);
+                valorTotalNFe += parseFloat(nfe.valorTotal);
+                valorTotalGuia += parseFloat(nfe.valorICMSST);
                 
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${nfe.chave.substring(0, 15)}...</td>
-                    <td>${nfe.emitente.razaoSocial.substring(0, 15)}... (${nfe.emitente.uf})</td>
-                    <td><strong>${nfe.destinatario.razaoSocial ? nfe.destinatario.razaoSocial.substring(0, 15) + '...' : 'Destinatário'} (${nfe.ufFavorecida})</strong></td>
-                    <td>R$ ${parseFloat(nfe.valorTotal).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td class="nfe-number">${nfe.numero}</td>
+                    <td>
+                        <div class="company-name" title="${nfe.emitente.razaoSocial}">
+                            ${nfe.emitente.razaoSocial}
+                        </div>
+                        <small>(${nfe.emitente.uf})</small>
+                    </td>
+                    <td>
+                        <div class="company-name" title="${nfe.destinatario.razaoSocial || 'Destinatário'}">
+                            ${nfe.destinatario.razaoSocial || 'Destinatário'}
+                        </div>
+                        <small><strong>(${nfe.ufFavorecida})</strong></small>
+                    </td>
+                    <td class="valor-cell">R$ ${parseFloat(nfe.valorTotal).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                    <td class="valor-guia">R$ ${parseFloat(nfe.valorICMSST).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
                     <td>
                         <input type="date" value="${nfe.dataVencimento}" 
                                onchange="updateVencimento(${index}, this.value)" 
-                               style="padding: 5px; border: 1px solid #ddd; border-radius: 3px;">
+                               style="padding: 5px; border: 1px solid #ddd; border-radius: 3px; width: 100%; font-size: 12px;">
                     </td>
                     <td>
                         <span class="status-indicator status-${nfe.status}"></span>
                         ${getStatusText(nfe.status)}
                     </td>
                     <td>
-                        <button class="action-btn delete-btn" onclick="removeNFe(${index})">❌</button>
+                        <button class="action-btn delete-btn" onclick="removeNFe(${index})" title="Remover">❌</button>
                     </td>
                 `;
                 guiasTableBody.appendChild(row);
@@ -728,7 +793,8 @@
             
             // Atualizar resumo
             totalGuias.textContent = nfesData.length;
-            totalValor.textContent = `R$ ${valorTotalLote.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            totalValorNFe.textContent = `R$ ${valorTotalNFe.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            totalValorGuia.textContent = `R$ ${valorTotalGuia.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
         }
 
         function removeNFe(index) {
@@ -752,16 +818,16 @@
             
             nfesData.forEach((nfe, index) => {
                 if (!nfe.ufFavorecida || nfe.ufFavorecida.length !== 2) {
-                    errors.push(`NF-e ${nfe.chave}: UF favorecida inválida`);
+                    errors.push(`NF-e ${nfe.numero}: UF favorecida inválida`);
                 }
                 if (!nfe.receita) {
-                    errors.push(`NF-e ${nfe.chave}: Receita não selecionada`);
+                    errors.push(`NF-e ${nfe.numero}: Receita não selecionada`);
                 }
                 if (!nfe.emitente.cnpj) {
-                    warnings.push(`NF-e ${nfe.chave}: CNPJ do emitente não encontrado`);
+                    warnings.push(`NF-e ${nfe.numero}: CNPJ do emitente não encontrado`);
                 }
-                if (parseFloat(nfe.valorTotal) <= 0) {
-                    warnings.push(`NF-e ${nfe.chave}: Valor total zerado ou negativo`);
+                if (parseFloat(nfe.valorICMSST) <= 0) {
+                    warnings.push(`NF-e ${nfe.numero}: ICMS ST zerado ou negativo - verifique o XML`);
                 }
             });
             
@@ -818,8 +884,8 @@
                 xmlContent += `        <mes>${nfe.periodo.mes}</mes>\n`;
                 xmlContent += `        <ano>${nfe.periodo.ano}</ano>\n`;
                 xmlContent += `      </c05_referencia>\n`;
-                xmlContent += `      <c06_valorPrincipal>${parseFloat(nfe.valorPrincipal).toFixed(2)}</c06_valorPrincipal>\n`;
-                xmlContent += `      <c10_valorTotal>${parseFloat(nfe.valorTotal).toFixed(2)}</c10_valorTotal>\n`;
+                xmlContent += `      <c06_valorPrincipal>${parseFloat(nfe.valorICMSST).toFixed(2)}</c06_valorPrincipal>\n`;
+                xmlContent += `      <c10_valorTotal>${parseFloat(nfe.valorICMSST).toFixed(2)}</c10_valorTotal>\n`;
                 xmlContent += `      <c14_dataVencimento>${nfe.dataVencimento}</c14_dataVencimento>\n`;
                 xmlContent += `      <c16_razaoSocialEmitente>${escapeXML(nfe.emitente.razaoSocial)}</c16_razaoSocialEmitente>\n`;
                 
