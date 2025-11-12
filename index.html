@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Lote GNRE</title>
+    <title>Gerador Simples de Lote GNRE</title>
     <style>
         :root {
             --primary: #2c3e50;
@@ -24,6 +24,7 @@
         body {
             background-color: #f5f7fa;
             padding: 20px;
+            line-height: 1.5;
         }
         
         .container {
@@ -101,6 +102,14 @@
             background: #e67e22;
         }
         
+        .btn-info {
+            background: #17a2b8;
+        }
+        
+        .btn-info:hover {
+            background: #138496;
+        }
+        
         table {
             width: 100%;
             border-collapse: collapse;
@@ -109,17 +118,22 @@
         }
         
         th, td {
-            padding: 10px 8px;
+            padding: 12px 8px;
             text-align: left;
             border-bottom: 1px solid #ddd;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            vertical-align: top;
+            line-height: 1.4;
         }
         
         th {
             background: var(--light);
             font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
         
         .xml-preview {
@@ -156,12 +170,14 @@
         }
         
         .action-btn {
-            padding: 5px 10px;
+            padding: 6px 10px;
             border: none;
             border-radius: 3px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
             transition: all 0.3s;
+            min-width: 40px;
+            text-align: center;
         }
         
         .delete-btn {
@@ -248,10 +264,11 @@
         
         .status-indicator {
             display: inline-block;
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
-            margin-right: 5px;
+            margin-right: 8px;
+            vertical-align: middle;
         }
         
         .status-ready {
@@ -275,19 +292,25 @@
         
         .table-container {
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
         
         .nfe-number {
             font-family: monospace;
             font-weight: bold;
             color: var(--primary);
+            word-break: break-all;
         }
         
         .company-name {
             max-width: 120px;
-            white-space: nowrap;
+            white-space: normal;
             overflow: hidden;
             text-overflow: ellipsis;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
         }
         
         .valor-cell {
@@ -300,6 +323,150 @@
             font-weight: bold;
         }
         
+        .campos-manuais-row {
+            background: #f8f9fa;
+            border-left: 4px solid var(--warning);
+        }
+        
+        .campos-manuais-row.hidden {
+            display: none;
+        }
+        
+        .campos-manuais-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .campos-manuais-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .campo-manual-group {
+            margin-bottom: 0;
+        }
+        
+        .campo-manual-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        
+        .campo-manual-group input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            background: white;
+        }
+        
+        .campo-manual-info {
+            font-size: 11px;
+            color: #666;
+            margin-top: 4px;
+            line-height: 1.3;
+        }
+        
+        /* Abas */
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            background: #f8f9fa;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+        }
+        
+        .tab:hover {
+            background: #e9ecef;
+        }
+        
+        .tab.active {
+            background: white;
+            border-bottom: 2px solid var(--secondary);
+            color: var(--secondary);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Configurações avançadas */
+        .config-uf-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .uf-config-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            background: #f8f9fa;
+        }
+        
+        .uf-config-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .uf-config-title {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 16px;
+        }
+        
+        .config-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        
+        .backup-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .backup-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        /* Melhorias para responsividade */
         @media (max-width: 768px) {
             .config-grid {
                 grid-template-columns: 1fr;
@@ -317,121 +484,248 @@
             
             table {
                 font-size: 12px;
+                min-width: 800px;
             }
             
             th, td {
-                padding: 8px 5px;
+                padding: 12px 8px;
             }
+            
+            .table-container {
+                margin: 0 -10px;
+                padding: 0 10px;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .card {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+            
+            .valor-cell, .valor-guia {
+                font-size: 11px;
+                white-space: nowrap;
+            }
+            
+            input[type="date"] {
+                padding: 6px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 11px;
+                min-width: 100px;
+            }
+            
+            .config-uf-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                flex: 1;
+                min-width: 120px;
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .upload-area {
+                padding: 20px;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 14px;
+                width: 100%;
+                margin: 5px 0;
+            }
+            
+            .campos-manuais-content {
+                flex-direction: column;
+            }
+            
+            .campos-manuais-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .backup-actions {
+                flex-direction: column;
+            }
+        }
+        
+        tbody tr {
+            transition: background-color 0.2s;
+        }
+        
+        tbody tr:hover {
+            background-color: #f8f9fa;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Gerador de Lote GNRE</h1>
+            <h1>Gerador Simples de Lote GNRE</h1>
             <p>Arraste os XMLs das NF-e - UF Favorecida = UF do Destinatário (automático)</p>
         </header>
 
-        <div class="card">
-            <div class="section">
-                <div class="section-title">1. Configuração</div>
-                <div class="config-grid">
-                    <div class="form-group">
-                        <label for="receita">Receita:</label>
-                        <select id="receita">
-                            <option value="">-- Selecione a Receita --</option>
-                            <option value="100013">100013 - ICMS Comunicação</option>
-                            <option value="100021">100021 - ICMS Energia Elétrica</option>
-                            <option value="100030">100030 - ICMS Transporte</option>
-                            <option value="100048">100048 - ICMS Substituição Tributária por Apuração</option>
-                            <option value="100056">100056 - ICMS Importação</option>
-                            <option value="100064">100064 - ICMS Autuação Fiscal</option>
-                            <option value="100072">100072 - ICMS Parcelamento</option>
-                            <option value="100080">100080 - ICMS Recolhimentos Especiais</option>
-                            <option value="100099" selected>100099 - ICMS Substituição Tributária por Operação</option>
-                            <option value="100102">100102 - ICMS Consumidor Final Não Contribuinte Outra UF por Operação</option>
-                            <option value="100110">100110 - ICMS Consumidor Final Não Contribuinte Outra UF por Apuração</option>
-                            <option value="100129">100129 - ICMS Fundo Estadual de Combate à Pobreza por Operação</option>
-                            <option value="100137">100137 - ICMS Fundo Estadual de Combate à Pobreza por Apuração</option>
-                            <option value="150010">150010 - ICMS Dívida Ativa</option>
-                            <option value="500011">500011 - Multa p/ infração à obrigação acessória</option>
-                            <option value="600016">600016 - Taxa</option>
-                        </select>
-                        <div class="info-text">Selecione o código da receita conforme documento fiscal</div>
+        <div class="tabs">
+            <button class="tab active" onclick="openTab('tabPrincipal')">📋 Principal</button>
+            <button class="tab" onclick="openTab('tabConfig')">⚙️ Configurações Avançadas</button>
+        </div>
+
+        <!-- ABA PRINCIPAL -->
+        <div id="tabPrincipal" class="tab-content active">
+            <div class="card">
+                <div class="section">
+                    <div class="section-title">1. Configuração Global</div>
+                    <div class="config-grid">
+                        <div class="form-group">
+                            <label for="receita">Receita:</label>
+                            <select id="receita">
+                                <option value="">-- Selecione a Receita --</option>
+                                <option value="100013">100013 - ICMS Comunicação</option>
+                                <option value="100021">100021 - ICMS Energia Elétrica</option>
+                                <option value="100030">100030 - ICMS Transporte</option>
+                                <option value="100048">100048 - ICMS Substituição Tributária por Apuração</option>
+                                <option value="100056">100056 - ICMS Importação</option>
+                                <option value="100064">100064 - ICMS Autuação Fiscal</option>
+                                <option value="100072">100072 - ICMS Parcelamento</option>
+                                <option value="100080">100080 - ICMS Recolhimentos Especiais</option>
+                                <option value="100099" selected>100099 - ICMS Substituição Tributária por Operação</option>
+                                <option value="100102">100102 - ICMS Consumidor Final Não Contribuinte Outra UF por Operação</option>
+                                <option value="100110">100110 - ICMS Consumidor Final Não Contribuinte Outra UF por Apuração</option>
+                                <option value="100129">100129 - ICMS Fundo Estadual de Combate à Pobreza por Operação</option>
+                                <option value="100137">100137 - ICMS Fundo Estadual de Combate à Pobreza por Apuração</option>
+                                <option value="150010">150010 - ICMS Dívida Ativa</option>
+                                <option value="500011">500011 - Multa p/ infração à obrigação acessória</option>
+                                <option value="600016">600016 - Taxa</option>
+                            </select>
+                            <div class="info-text">Selecione o código da receita conforme documento fiscal</div>
+                        </div>
+                        
+                        <div class="form-group" id="detalhamentoGroup" style="display: none;">
+                            <label for="detalhamento">Detalhamento da Receita (Global):</label>
+                            <select id="detalhamento">
+                                <option value="">-- Selecione o Detalhamento --</option>
+                            </select>
+                            <div class="info-text" id="detalhamentoInfo">Detalhamento obrigatório para UFs específicas</div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <strong>⚠️ Atenção:</strong> Para Substituição Tributária, o valor da guia será o <strong>ICMS ST</strong> encontrado no XML.
                     </div>
                 </div>
-                
-                <div class="alert alert-warning">
-                    <strong>⚠️ Atenção:</strong> Para Substituição Tributária, o valor da guia será o <strong>ICMS ST</strong> encontrado no XML.
-                </div>
-            </div>
 
-            <div class="section">
-                <div class="section-title">2. Importar XMLs das NF-e</div>
-                <div class="upload-area" id="uploadArea">
-                    <div style="font-size: 48px; margin-bottom: 10px;">📁</div>
-                    <h3>Arraste os XMLs das Notas Fiscais aqui</h3>
-                    <p>ou clique para selecionar os arquivos</p>
-                    <input type="file" id="xmlFiles" accept=".xml" multiple style="display: none;">
-                </div>
-                
-                <div id="fileList" class="hidden">
-                    <div class="section-title">Arquivos Carregados</div>
-                    <div id="filesContainer"></div>
-                </div>
-            </div>
-
-            <div class="section">
-                <div class="section-title">3. Guias Geradas Automaticamente</div>
-                
-                <div id="summaryContainer" class="hidden">
-                    <div class="summary-card">
-                        <strong>Resumo do Lote:</strong>
-                        <span id="totalGuias">0</span> guia(s) gerada(s) | 
-                        Valor Total NF-e: <span id="totalValorNFe">R$ 0,00</span> |
-                        Valor Total Guias: <span id="totalValorGuia" class="valor-guia">R$ 0,00</span>
+                <div class="section">
+                    <div class="section-title">2. Importar XMLs das NF-e</div>
+                    <div class="upload-area" id="uploadArea">
+                        <div style="font-size: 48px; margin-bottom: 10px;">📁</div>
+                        <h3>Arraste os XMLs das Notas Fiscais aqui</h3>
+                        <p>ou clique para selecionar os arquivos</p>
+                        <input type="file" id="xmlFiles" accept=".xml" multiple style="display: none;">
+                    </div>
+                    
+                    <div id="fileList" class="hidden">
+                        <div class="section-title">Arquivos Carregados</div>
+                        <div id="filesContainer"></div>
                     </div>
                 </div>
-                
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th width="120">NF-e</th>
-                                <th width="150">Emitente</th>
-                                <th width="180">Destinatário (UF Favorecida)</th>
-                                <th width="120">Valor NF-e</th>
-                                <th width="120">Valor Guia (ICMS ST)</th>
-                                <th width="110">Data Venc.</th>
-                                <th width="80">Status</th>
-                                <th width="60">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="guiasTableBody">
-                            <!-- Dados serão preenchidos automaticamente -->
-                        </tbody>
-                    </table>
+
+                <div class="section">
+                    <div class="section-title">3. Guias Geradas Automaticamente</div>
+                    
+                    <div id="summaryContainer" class="hidden">
+                        <div class="summary-card">
+                            <strong>Resumo do Lote:</strong>
+                            <span id="totalGuias">0</span> guia(s) gerada(s) | 
+                            Valor Total NF-e: <span id="totalValorNFe">R$ 0,00</span> |
+                            Valor Total Guias: <span id="totalValorGuia" class="valor-guia">R$ 0,00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th width="120">NF-e</th>
+                                    <th width="150">Emitente</th>
+                                    <th width="180">Destinatário (UF Favorecida)</th>
+                                    <th width="120">Valor NF-e</th>
+                                    <th width="120">Valor Guia (ICMS ST)</th>
+                                    <th width="110">Data Venc.</th>
+                                    <th width="80">Status</th>
+                                    <th width="80">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="guiasTableBody">
+                                <!-- Dados serão preenchidos automaticamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn btn-success" id="generateBtn">Gerar XML do Lote GNRE</button>
+                    <button class="btn btn-warning" id="validateBtn">Validar Dados</button>
                 </div>
             </div>
 
-            <div style="text-align: center; margin-top: 20px;">
-                <button class="btn btn-success" id="generateBtn">Gerar XML do Lote GNRE</button>
-                <button class="btn btn-warning" id="validateBtn">Validar Dados</button>
+            <div class="card hidden" id="resultSection">
+                <div class="section">
+                    <div class="section-title">XML Gerado com Sucesso!</div>
+                    <p>O arquivo está pronto para importação no sistema GNRE.</p>
+                    
+                    <div style="margin: 20px 0;">
+                        <button class="btn btn-success" id="downloadBtn">📥 Baixar Arquivo XML</button>
+                        <button class="btn" id="newBatchBtn">🔄 Novo Lote</button>
+                    </div>
+                    
+                    <div class="section-title">Prévia do XML:</div>
+                    <div class="xml-preview" id="xmlPreview"></div>
+                </div>
             </div>
         </div>
 
-        <div class="card hidden" id="resultSection">
-            <div class="section">
-                <div class="section-title">XML Gerado com Sucesso!</div>
-                <p>O arquivo está pronto para importação no sistema GNRE.</p>
-                
-                <div style="margin: 20px 0;">
-                    <button class="btn btn-success" id="downloadBtn">📥 Baixar Arquivo XML</button>
-                    <button class="btn" id="newBatchBtn">🔄 Novo Lote</button>
+        <!-- ABA CONFIGURAÇÕES AVANÇADAS -->
+        <div id="tabConfig" class="tab-content">
+            <div class="card">
+                <div class="section">
+                    <div class="section-title">Configurações Avançadas por UF</div>
+                    <p>Personalize as regras específicas para cada estado. As alterações são salvas automaticamente.</p>
+                    
+                    <div class="config-uf-grid" id="ufConfigGrid">
+                        <!-- Configurações por UF serão geradas aqui -->
+                    </div>
+                    
+                    <div class="config-actions">
+                        <button class="btn btn-success" onclick="saveAllConfigs()">💾 Salvar Todas as Configurações</button>
+                        <button class="btn btn-info" onclick="resetToDefault()">🔄 Restaurar Padrões</button>
+                    </div>
                 </div>
-                
-                <div class="section-title">Prévia do XML:</div>
-                <div class="xml-preview" id="xmlPreview"></div>
+
+                <div class="section">
+                    <div class="section-title">Backup e Restauração</div>
+                    <div class="backup-section">
+                        <p><strong>Backup das Configurações:</strong> Faça backup de todas as configurações personalizadas ou restaure de um backup anterior.</p>
+                        
+                        <div class="backup-actions">
+                            <button class="btn btn-success" onclick="exportConfigs()">📤 Exportar Configurações</button>
+                            <button class="btn btn-warning" onclick="importConfigs()">📥 Importar Configurações</button>
+                            <input type="file" id="configFileInput" accept=".json" style="display: none;" onchange="handleConfigFileSelect(this.files)">
+                        </div>
+                        
+                        <div class="info-text" style="margin-top: 10px;">
+                            💡 Dica: Exporte suas configurações antes de fazer grandes alterações.
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -440,6 +734,216 @@
         // Variáveis globais
         let nfesData = [];
         let configs = JSON.parse(localStorage.getItem('gnreConfigs')) || {};
+        
+        // Regras por UF baseadas no PDF completo - AGORA EDITÁVEIS
+        let ufRules = JSON.parse(localStorage.getItem('gnreUfRules')) || {
+            'AC': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto', 'convenio', 'numeroControle'],
+                tipoDocumentoOrigem: '22',
+                observacao: 'Configuração padrão AC'
+            },
+            'AL': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto'],
+                tipoDocumentoOrigem: '22',
+                observacao: 'Configuração padrão AL'
+            },
+            'AP': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto', 'convenio'],
+                tipoDocumentoOrigem: '22',
+                observacao: 'Configuração padrão AP'
+            },
+            'AM': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto'],
+                tipoDocumentoOrigem: '22',
+                observacao: 'Configuração padrão AM'
+            },
+            'BA': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto', 'convenio', 'numeroControle'],
+                tipoDocumentoOrigem: '22',
+                observacao: 'Exige código de produto para ICMS ST'
+            },
+            'CE': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto', 'convenio'],
+                tipoDocumentoOrigem: '22',
+                observacao: 'Configuração padrão CE'
+            },
+            'DF': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto'],
+                tipoDocumentoOrigem: '22',
+                observacao: 'Configuração padrão DF'
+            },
+            'ES': { 
+                portalGNRE: false, 
+                receitas: [],
+                camposManuais: [],
+                tipoDocumentoOrigem: '10',
+                observacao: 'Utiliza portal próprio - SEFAZ ES'
+            },
+            'GO': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto', 'convenio', 'numeroControle'],
+                tipoDocumentoOrigem: '22',
+                observacao: 'Configuração padrão GO'
+            },
+            'MA': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto'],
+                tipoDocumentoOrigem: '22',
+                observacao: 'Configuração padrão MA'
+            },
+            'MT': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto', 'convenio', 'numeroControle'],
+                tipoDocumentoOrigem: '22',
+                detalhamentos: {
+                    '100129': ['000034', '000057', '000110', '000112', '000113'],
+                    '100102': ['000055', '000109'],
+                    '100099': ['000105', '000106', '000107', '000111']
+                },
+                observacao: 'Configuração padrão MT'
+            },
+            'MS': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto', 'convenio'],
+                tipoDocumentoOrigem: '22',
+                observacao: 'Configuração padrão MS'
+            },
+            'MG': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto'],
+                tipoDocumentoOrigem: '55',
+                detalhamentos: { '100129': ['000051', '000052'] },
+                observacao: 'MG usa tipo 55 para NF-e'
+            },
+            'PA': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto', 'convenio'],
+                tipoDocumentoOrigem: '22',
+                observacao: 'Configuração padrão PA'
+            },
+            'PB': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto'],
+                tipoDocumentoOrigem: '22',
+                observacao: 'Configuração padrão PB'
+            },
+            'PR': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto', 'convenio', 'numeroControle'],
+                tipoDocumentoOrigem: '22',
+                observacao: 'Configuração padrão PR'
+            },
+            'PE': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto'],
+                tipoDocumentoOrigem: '22',
+                observacao: 'Configuração padrão PE'
+            },
+            'PI': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto', 'convenio'],
+                tipoDocumentoOrigem: '22',
+                observacao: 'Configuração padrão PI'
+            },
+            'RJ': { 
+                portalGNRE: false, 
+                receitas: [],
+                camposManuais: [],
+                tipoDocumentoOrigem: '10',
+                observacao: 'Utiliza portal próprio - SEFAZ RJ'
+            },
+            'RN': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto'],
+                tipoDocumentoOrigem: '22',
+                observacao: 'Configuração padrão RN'
+            },
+            'RS': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto', 'convenio', 'numeroControle'],
+                tipoDocumentoOrigem: '22',
+                observacao: 'Configuração padrão RS'
+            },
+            'RO': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto'],
+                tipoDocumentoOrigem: '22',
+                observacao: 'Configuração padrão RO'
+            },
+            'RR': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto', 'convenio'],
+                tipoDocumentoOrigem: '22',
+                observacao: 'Configuração padrão RR'
+            },
+            'SC': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto', 'convenio', 'numeroControle'],
+                tipoDocumentoOrigem: '22',
+                observacao: 'Configuração padrão SC'
+            },
+            'SP': { 
+                portalGNRE: false, 
+                receitas: [],
+                camposManuais: [],
+                tipoDocumentoOrigem: '10',
+                observacao: 'Utiliza portal próprio - SEFAZ SP'
+            },
+            'SE': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto'],
+                tipoDocumentoOrigem: '22',
+                observacao: 'Configuração padrão SE'
+            },
+            'TO': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto', 'convenio'],
+                tipoDocumentoOrigem: '22',
+                detalhamentos: { '100099': ['000003', '000004', '000005'] },
+                observacao: 'Configuração padrão TO'
+            }
+        };
+
+        // Mapeamento de códigos UF para IBGE
+        const ufCodes = {
+            'AC': '12', 'AL': '27', 'AM': '13', 'AP': '16', 'BA': '29',
+            'CE': '23', 'DF': '53', 'ES': '32', 'GO': '52', 'MA': '21',
+            'MG': '31', 'MS': '50', 'MT': '51', 'PA': '15', 'PB': '25',
+            'PE': '26', 'PI': '22', 'PR': '41', 'RJ': '33', 'RN': '24',
+            'RO': '11', 'RR': '14', 'RS': '43', 'SC': '42', 'SE': '28',
+            'SP': '35', 'TO': '17'
+        };
         
         // Elementos DOM
         const uploadArea = document.getElementById('uploadArea');
@@ -458,6 +962,7 @@
         const totalGuias = document.getElementById('totalGuias');
         const totalValorNFe = document.getElementById('totalValorNFe');
         const totalValorGuia = document.getElementById('totalValorGuia');
+        const ufConfigGrid = document.getElementById('ufConfigGrid');
 
         // Inicialização
         function init() {
@@ -467,7 +972,208 @@
             }
             
             updateGuiasTable();
+            renderUfConfigs();
+            
+            // Atualizar detalhamentos quando a receita mudar
+            receitaSelect.addEventListener('change', function() {
+                // Para cada NFe, atualizar detalhamentos baseado na UF favorecida
+                nfesData.forEach(nfe => {
+                    if (nfe.ufFavorecida) {
+                        updateDetalhamentoOptions(nfe.ufFavorecida, this.value);
+                    }
+                });
+            });
         }
+
+        // Sistema de Abas
+        function openTab(tabName) {
+            // Esconder todas as abas
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            
+            // Remover active de todas as tabs
+            const tabs = document.getElementsByClassName('tab');
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            
+            // Mostrar a aba selecionada
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Renderizar configurações por UF
+        function renderUfConfigs() {
+            ufConfigGrid.innerHTML = '';
+            
+            Object.keys(ufRules).sort().forEach(uf => {
+                const rule = ufRules[uf];
+                const card = document.createElement('div');
+                card.className = 'uf-config-card';
+                card.innerHTML = `
+                    <div class="uf-config-header">
+                        <div class="uf-config-title">${uf}</div>
+                        <div style="font-size: 12px; color: #666;">
+                            ${rule.portalGNRE ? '✅ Portal GNRE' : '❌ Portal Próprio'}
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Tipo Documento Origem (NF-e):</label>
+                        <select onchange="updateUfRule('${uf}', 'tipoDocumentoOrigem', this.value)">
+                            <option value="10" ${rule.tipoDocumentoOrigem === '10' ? 'selected' : ''}>10 - Numérico Simples</option>
+                            <option value="22" ${rule.tipoDocumentoOrigem === '22' ? 'selected' : ''}>22 - Chave NF-e (44 dígitos)</option>
+                            <option value="55" ${rule.tipoDocumentoOrigem === '55' ? 'selected' : ''}>55 - NF-e Específico</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Portal GNRE:</label>
+                        <select onchange="updateUfRule('${uf}', 'portalGNRE', this.value === 'true')">
+                            <option value="true" ${rule.portalGNRE ? 'selected' : ''}>Sim - Usa Portal GNRE</option>
+                            <option value="false" ${!rule.portalGNRE ? 'selected' : ''}>Não - Portal Próprio</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Campos Manuais:</label>
+                        <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                            <label style="display: flex; align-items: center; font-size: 12px;">
+                                <input type="checkbox" ${rule.camposManuais.includes('produto') ? 'checked' : ''} 
+                                       onchange="toggleCampoManual('${uf}', 'produto', this.checked)"> Produto
+                            </label>
+                            <label style="display: flex; align-items: center; font-size: 12px;">
+                                <input type="checkbox" ${rule.camposManuais.includes('convenio') ? 'checked' : ''} 
+                                       onchange="toggleCampoManual('${uf}', 'convenio', this.checked)"> Convênio
+                            </label>
+                            <label style="display: flex; align-items: center; font-size: 12px;">
+                                <input type="checkbox" ${rule.camposManuais.includes('numeroControle') ? 'checked' : ''} 
+                                       onchange="toggleCampoManual('${uf}', 'numeroControle', this.checked)"> Controle
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Observações:</label>
+                        <input type="text" value="${rule.observacao || ''}" 
+                               onchange="updateUfRule('${uf}', 'observacao', this.value)"
+                               placeholder="Observações sobre esta UF">
+                    </div>
+                `;
+                ufConfigGrid.appendChild(card);
+            });
+        }
+
+        // Atualizar regra de UF
+        function updateUfRule(uf, campo, valor) {
+            if (!ufRules[uf]) ufRules[uf] = {};
+            ufRules[uf][campo] = valor;
+            saveUfRules();
+            showAlert(`Configuração de ${uf} atualizada!`, 'success');
+        }
+
+        // Alternar campo manual
+        function toggleCampoManual(uf, campo, ativo) {
+            if (!ufRules[uf].camposManuais) {
+                ufRules[uf].camposManuais = [];
+            }
+            
+            if (ativo && !ufRules[uf].camposManuais.includes(campo)) {
+                ufRules[uf].camposManuais.push(campo);
+            } else if (!ativo && ufRules[uf].camposManuais.includes(campo)) {
+                ufRules[uf].camposManuais = ufRules[uf].camposManuais.filter(c => c !== campo);
+            }
+            
+            saveUfRules();
+        }
+
+        // Salvar regras de UF
+        function saveUfRules() {
+            localStorage.setItem('gnreUfRules', JSON.stringify(ufRules));
+        }
+
+        // Salvar todas as configurações
+        function saveAllConfigs() {
+            saveUfRules();
+            showAlert('Todas as configurações foram salvas com sucesso!', 'success');
+        }
+
+        // Restaurar padrões
+        function resetToDefault() {
+            if (confirm('Tem certeza que deseja restaurar todas as configurações para os valores padrão? Isso apagará todas as personalizações.')) {
+                localStorage.removeItem('gnreUfRules');
+                ufRules = JSON.parse(JSON.stringify(getDefaultUfRules()));
+                renderUfConfigs();
+                showAlert('Configurações restauradas para os valores padrão!', 'success');
+            }
+        }
+
+        // Backup e Restauração
+        function exportConfigs() {
+            const configData = {
+                ufRules: ufRules,
+                configs: configs,
+                exportDate: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            const blob = new Blob([JSON.stringify(configData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `gnre_config_backup_${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showAlert('Backup das configurações exportado com sucesso!', 'success');
+        }
+
+        function importConfigs() {
+            document.getElementById('configFileInput').click();
+        }
+
+        function handleConfigFileSelect(files) {
+            if (files.length === 0) return;
+            
+            const file = files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const configData = JSON.parse(e.target.result);
+                    
+                    if (configData.ufRules && configData.configs) {
+                        if (confirm('Deseja importar estas configurações? Isso substituirá todas as configurações atuais.')) {
+                            ufRules = configData.ufRules;
+                            configs = configData.configs;
+                            
+                            saveUfRules();
+                            saveConfigs();
+                            renderUfConfigs();
+                            
+                            if (configs.receita) {
+                                receitaSelect.value = configs.receita;
+                            }
+                            
+                            showAlert('Configurações importadas com sucesso!', 'success');
+                        }
+                    } else {
+                        showAlert('Arquivo de configuração inválido.', 'error');
+                    }
+                } catch (error) {
+                    showAlert('Erro ao importar configurações: ' + error.message, 'error');
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+
+        // [RESTANTE DO CÓDIGO PERMANECE EXATAMENTE IGUAL...]
+        // ... (todas as outras funções permanecem inalteradas)
 
         // Event Listeners
         uploadArea.addEventListener('click', () => xmlFilesInput.click());
@@ -541,6 +1247,12 @@
                         nfesData.push(nfeData);
                         updateFileList();
                         updateGuiasTable();
+                        
+                        // ATUALIZAR INFORMAÇÕES DA UF AUTOMATICAMENTE
+                        if (nfeData.ufFavorecida) {
+                            updateDetalhamentoOptions(nfeData.ufFavorecida, receitaSelect.value);
+                        }
+                        
                         showAlert(`NF-e ${nfeData.numero} processada com sucesso!`, 'success');
                     } else {
                         showAlert(`O arquivo ${file.name} não é uma NF-e válida.`, 'error');
@@ -575,11 +1287,23 @@
             const total = infNFe.getElementsByTagName('total')[0];
             const ide = infNFe.getElementsByTagName('ide')[0];
             
+            // Extrair dados de endereço do emitente e destinatário
+            const enderEmit = emitente?.getElementsByTagName('enderEmit')[0];
+            const enderDest = destinatario?.getElementsByTagName('enderDest')[0];
+            
             // Extrair UFs
             const ufEmitente = getUF(emitente);
             const ufDestinatario = getUF(destinatario);
             
-            // Extrair valores - CORREÇÃO: Buscar ICMS ST no campo correto
+            // ✅ CORREÇÃO: Extrair códigos IBGE CORRETAMENTE (7 dígitos)
+            const codigoIBGEEmitenteRaw = enderEmit?.getElementsByTagName('cMun')[0]?.textContent || '';
+            const codigoIBGEDestinatarioRaw = enderDest?.getElementsByTagName('cMun')[0]?.textContent || '';
+            
+            // GNRE espera 7 dígitos para município (código completo)
+            const codigoIBGEEmitente = codigoIBGEEmitenteRaw.padStart(7, '0').substring(0, 7);
+            const codigoIBGEDestinatario = codigoIBGEDestinatarioRaw.padStart(7, '0').substring(0, 7);
+            
+            // Extrair valores - Buscar ICMS ST no campo correto
             let valorTotal = '0';
             let valorICMSST = '0';
             
@@ -588,15 +1312,8 @@
                 if (icmsTotal) {
                     valorTotal = icmsTotal.getElementsByTagName('vNF')[0]?.textContent || '0';
                     
-                    // CORREÇÃO: Buscar o valor do ICMS ST no campo <vST>
+                    // Buscar o valor do ICMS ST no campo <vST>
                     valorICMSST = icmsTotal.getElementsByTagName('vST')[0]?.textContent || '0';
-                    
-                    console.log('Valores encontrados:', {
-                        valorTotal,
-                        valorICMSST,
-                        vST: icmsTotal.getElementsByTagName('vST')[0]?.textContent,
-                        vICMSST: icmsTotal.getElementsByTagName('vICMSST')[0]?.textContent
-                    });
                 }
             }
             
@@ -628,8 +1345,18 @@
             const mes = String(now.getMonth() + 1).padStart(2, '0');
             const ano = now.getFullYear();
             
-            // Validar dados críticos
-            const status = validateNFeData(ufDestinatario, receita, valorICMSST);
+            // Validar dados críticos INCLUINDO municípios
+            const status = validateNFeData(ufDestinatario, receita, valorICMSST, {}, {
+                emitente: { 
+                    municipio: codigoIBGEEmitente, 
+                    uf: ufEmitente 
+                },
+                destinatario: { 
+                    municipio: codigoIBGEDestinatario 
+                },
+                chave: chave,
+                ufFavorecida: ufDestinatario
+            });
             
             return {
                 chave: chave,
@@ -637,7 +1364,7 @@
                 ufFavorecida: ufDestinatario,
                 receita: receita,
                 dataVencimento: dataVencimentoStr,
-                valorPrincipal: valorICMSST, // AGORA USA ICMS ST CORRETAMENTE
+                valorPrincipal: valorICMSST,
                 valorTotal: valorTotal,
                 valorICMSST: valorICMSST,
                 documentoOrigem: chave || fileName,
@@ -649,29 +1376,99 @@
                 emitente: {
                     razaoSocial: emitente?.getElementsByTagName('xNome')[0]?.textContent || 'Emitente NF-e',
                     cnpj: emitente?.getElementsByTagName('CNPJ')[0]?.textContent || emitente?.getElementsByTagName('CPF')[0]?.textContent || '',
-                    ie: emitente?.getElementsByTagName('IE')[0]?.textContent || '',
-                    uf: ufEmitente
+                    uf: ufEmitente,
+                    endereco: (enderEmit?.getElementsByTagName('xLgr')[0]?.textContent || '') + 
+                             (enderEmit?.getElementsByTagName('nro')[0]?.textContent ? ', ' + enderEmit.getElementsByTagName('nro')[0].textContent : '') + 
+                             (enderEmit?.getElementsByTagName('xBairro')[0]?.textContent ? ' - ' + enderEmit.getElementsByTagName('xBairro')[0].textContent : '') || '',
+                    municipio: codigoIBGEEmitente,
+                    cep: enderEmit?.getElementsByTagName('CEP')[0]?.textContent || '',
+                    telefone: enderEmit?.getElementsByTagName('fone')[0]?.textContent || ''
                 },
                 destinatario: {
-                    razaoSocial: destinatario?.getElementsByTagName('xNome')[0]?.textContent || '',
+                    razaoSocial: destinatario?.getElementsByTagName('xNome')[0]?.textContent || 'Destinatário NF-e',
                     cnpj: destinatario?.getElementsByTagName('CNPJ')[0]?.textContent || destinatario?.getElementsByTagName('CPF')[0]?.textContent || '',
-                    uf: ufDestinatario
+                    uf: ufDestinatario,
+                    endereco: (enderDest?.getElementsByTagName('xLgr')[0]?.textContent || '') + 
+                             (enderDest?.getElementsByTagName('nro')[0]?.textContent ? ', ' + enderDest.getElementsByTagName('nro')[0].textContent : '') + 
+                             (enderDest?.getElementsByTagName('xBairro')[0]?.textContent ? ' - ' + enderDest.getElementsByTagName('xBairro')[0].textContent : '') || 'Endereço não informado',
+                    municipio: codigoIBGEDestinatario,
+                    cep: enderDest?.getElementsByTagName('CEP')[0]?.textContent || '00000000',
+                    telefone: enderDest?.getElementsByTagName('fone')[0]?.textContent || '0000000000'
                 },
                 fileName: fileName,
-                status: status
+                status: status,
+                camposManuais: {}
             };
         }
 
-        function validateNFeData(ufFavorecida, receita, valorICMSST) {
+        function validateMunicipioIBGE(codigoIBGE, uf) {
+            // Validar se o código IBGE tem 7 dígitos
+            if (!codigoIBGE || codigoIBGE.length !== 7) {
+                return false;
+            }
+            
+            // Validar se pertence à UF correta (primeiros 2 dígitos do código IBGE)
+            const codigoUF = codigoIBGE.substring(0, 2);
+            return ufCodes[uf] === codigoUF;
+        }
+
+        function validateNFeData(ufFavorecida, receita, valorICMSST, camposManuais = {}, nfeData = {}) {
             if (!ufFavorecida || ufFavorecida.length !== 2) {
                 return 'error';
             }
+            
+            // Verificar se a UF existe nas regras
+            const ufRule = ufRules[ufFavorecida];
+            if (!ufRule) {
+                return 'error';
+            }
+            
+            // Verificar se a UF utiliza portal GNRE
+            if (!ufRule.portalGNRE) {
+                return 'error';
+            }
+            
+            // Verificar se a receita é válida para a UF
             if (!receita) {
                 return 'error';
             }
+            
+            if (!ufRule.receitas.includes(receita)) {
+                return 'error';
+            }
+            
+            // Verificar se há detalhamentos obrigatórios para esta receita/UF
+            if (ufRule.detalhamentos && ufRule.detalhamentos[receita] && ufRule.detalhamentos[receita].length > 0) {
+                const detalhamentoSelect = document.getElementById('detalhamento');
+                if (!detalhamentoSelect || !detalhamentoSelect.value) {
+                    return 'warning'; // Precisa de detalhamento
+                }
+            }
+            
+            // ✅ NOVA VALIDAÇÃO: Códigos IBGE dos municípios
+            if (nfeData.emitente && nfeData.emitente.municipio && nfeData.emitente.uf) {
+                if (!validateMunicipioIBGE(nfeData.emitente.municipio, nfeData.emitente.uf)) {
+                    return 'error';
+                }
+            }
+            
+            if (nfeData.destinatario && nfeData.destinatario.municipio && ufFavorecida) {
+                if (!validateMunicipioIBGE(nfeData.destinatario.municipio, ufFavorecida)) {
+                    return 'error';
+                }
+            }
+            
+            // Validar campos manuais obrigatórios
+            if (ufRule && ufRule.camposManuais) {
+                if (ufRule.camposManuais.includes('produto') && (!camposManuais.produto || !camposManuais.produto.trim())) {
+                    return 'warning'; // Precisa de produto
+                }
+            }
+            
             if (!valorICMSST || parseFloat(valorICMSST) <= 0) {
                 return 'warning';
             }
+            
             return 'ready';
         }
 
@@ -699,6 +1496,32 @@
                 '28': 'SE', '17': 'TO'
             };
             return ufs[codigo] || codigo;
+        }
+
+        // Função para atualizar opções de detalhamento baseado na UF e receita
+        function updateDetalhamentoOptions(uf, receita) {
+            const detalhamentoGroup = document.getElementById('detalhamentoGroup');
+            const detalhamentoSelect = document.getElementById('detalhamento');
+            const detalhamentoInfo = document.getElementById('detalhamentoInfo');
+            
+            // Limpar opções atuais
+            detalhamentoSelect.innerHTML = '<option value="">-- Selecione o Detalhamento --</option>';
+            
+            const ufRule = ufRules[uf];
+            if (ufRule && ufRule.detalhamentos && ufRule.detalhamentos[receita] && ufRule.detalhamentos[receita].length > 0) {
+                detalhamentoGroup.style.display = 'block';
+                
+                ufRule.detalhamentos[receita].forEach(codigo => {
+                    const option = document.createElement('option');
+                    option.value = codigo;
+                    option.textContent = `${codigo} - Detalhamento ${codigo}`;
+                    detalhamentoSelect.appendChild(option);
+                });
+                
+                detalhamentoInfo.textContent = `Detalhamento obrigatório para ${uf} - Receita ${receita}`;
+            } else {
+                detalhamentoGroup.style.display = 'none';
+            }
         }
 
         function updateFileList() {
@@ -758,6 +1581,9 @@
                 valorTotalNFe += parseFloat(nfe.valorTotal);
                 valorTotalGuia += parseFloat(nfe.valorICMSST);
                 
+                const ufRule = ufRules[nfe.ufFavorecida];
+                const precisaCamposManuais = ufRule && ufRule.camposManuais && ufRule.camposManuais.length > 0;
+                
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td class="nfe-number">${nfe.numero}</td>
@@ -768,8 +1594,8 @@
                         <small>(${nfe.emitente.uf})</small>
                     </td>
                     <td>
-                        <div class="company-name" title="${nfe.destinatario.razaoSocial || 'Destinatário'}">
-                            ${nfe.destinatario.razaoSocial || 'Destinatário'}
+                        <div class="company-name" title="${nfe.destinatario.razaoSocial}">
+                            ${nfe.destinatario.razaoSocial}
                         </div>
                         <small><strong>(${nfe.ufFavorecida})</strong></small>
                     </td>
@@ -778,23 +1604,117 @@
                     <td>
                         <input type="date" value="${nfe.dataVencimento}" 
                                onchange="updateVencimento(${index}, this.value)" 
-                               style="padding: 5px; border: 1px solid #ddd; border-radius: 3px; width: 100%; font-size: 12px;">
+                               style="padding: 6px; border: 1px solid #ddd; border-radius: 4px; width: 100%; font-size: 11px; min-width: 100px;">
                     </td>
                     <td>
                         <span class="status-indicator status-${nfe.status}"></span>
                         ${getStatusText(nfe.status)}
                     </td>
                     <td>
+                        ${precisaCamposManuais ? `<button class="action-btn" onclick="toggleCamposManuais(${index})" title="Campos Manuais" style="background: var(--warning); color: white;">📝</button>` : ''}
                         <button class="action-btn delete-btn" onclick="removeNFe(${index})" title="Remover">❌</button>
                     </td>
                 `;
                 guiasTableBody.appendChild(row);
+                
+                // Adicionar linha expandível para campos manuais
+                if (precisaCamposManuais) {
+                    const expandRow = document.createElement('tr');
+                    expandRow.id = `camposManuaisRow-${index}`;
+                    expandRow.className = 'campos-manuais-row hidden';
+                    expandRow.innerHTML = `
+                        <td colspan="8" style="background: #f8f9fa; padding: 20px;">
+                            <div class="campos-manuais-content">
+                                <div style="flex: 1; min-width: 0;">
+                                    <strong style="display: block; margin-bottom: 15px; color: var(--primary);">
+                                        📝 Campos Manuais para ${nfe.ufFavorecida} - NF-e ${nfe.numero}
+                                    </strong>
+                                    <div class="campos-manuais-grid">
+                                        ${ufRule.camposManuais.includes('produto') ? `
+                                        <div class="campo-manual-group">
+                                            <label for="produto-${index}">Código do Produto:</label>
+                                            <input type="text" 
+                                                   id="produto-${index}" 
+                                                   value="${nfe.camposManuais?.produto || ''}"
+                                                   onchange="updateCampoManual(${index}, 'produto', this.value)"
+                                                   placeholder="Ex: 0101010">
+                                            <div class="campo-manual-info">Código do produto conforme tabela da UF</div>
+                                        </div>
+                                        ` : ''}
+                                        
+                                        ${ufRule.camposManuais.includes('convenio') ? `
+                                        <div class="campo-manual-group">
+                                            <label for="convenio-${index}">Número do Convênio:</label>
+                                            <input type="text" 
+                                                   id="convenio-${index}" 
+                                                   value="${nfe.camposManuais?.convenio || ''}"
+                                                   onchange="updateCampoManual(${index}, 'convenio', this.value)"
+                                                   placeholder="Ex: 123/2023">
+                                            <div class="campo-manual-info">Número do convênio/autorização</div>
+                                        </div>
+                                        ` : ''}
+                                        
+                                        ${ufRule.camposManuais.includes('numeroControle') ? `
+                                        <div class="campo-manual-group">
+                                            <label for="controle-${index}">Número de Controle:</label>
+                                            <input type="text" 
+                                                   id="controle-${index}" 
+                                                   value="${nfe.camposManuais?.numeroControle || ''}"
+                                                   onchange="updateCampoManual(${index}, 'numeroControle', this.value)"
+                                                   placeholder="Ex: CONTROLE123">
+                                            <div class="campo-manual-info">Número de controle interno</div>
+                                        </div>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                                <button class="action-btn" onclick="toggleCamposManuais(${index})" 
+                                        style="background: #6c757d; color: white; align-self: flex-start;">
+                                    ✕ Fechar
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    guiasTableBody.appendChild(expandRow);
+                }
             });
             
             // Atualizar resumo
             totalGuias.textContent = nfesData.length;
             totalValorNFe.textContent = `R$ ${valorTotalNFe.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
             totalValorGuia.textContent = `R$ ${valorTotalGuia.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+        }
+
+        // Função para expandir/recolher campos manuais de uma guia específica
+        function toggleCamposManuais(index) {
+            const row = document.getElementById(`camposManuaisRow-${index}`);
+            if (row) {
+                row.classList.toggle('hidden');
+            }
+        }
+
+        // Função para atualizar campos manuais de uma guia específica
+        function updateCampoManual(index, campo, valor) {
+            if (!nfesData[index].camposManuais) {
+                nfesData[index].camposManuais = {};
+            }
+            nfesData[index].camposManuais[campo] = valor;
+            
+            // Atualizar status da guia
+            nfesData[index].status = validateNFeData(
+                nfesData[index].ufFavorecida, 
+                nfesData[index].receita, 
+                nfesData[index].valorICMSST,
+                nfesData[index].camposManuais,
+                {
+                    emitente: nfesData[index].emitente,
+                    destinatario: nfesData[index].destinatario,
+                    chave: nfesData[index].chave,
+                    ufFavorecida: nfesData[index].ufFavorecida
+                }
+            );
+            
+            updateFileList();
+            updateGuiasTable();
         }
 
         function removeNFe(index) {
@@ -817,15 +1737,60 @@
             const warnings = [];
             
             nfesData.forEach((nfe, index) => {
+                const ufRule = ufRules[nfe.ufFavorecida];
+                
+                if (!ufRule) {
+                    errors.push(`NF-e ${nfe.numero}: UF favorecida "${nfe.ufFavorecida}" não reconhecida`);
+                } else if (!ufRule.portalGNRE) {
+                    errors.push(`NF-e ${nfe.numero}: ${nfe.ufFavorecida} utiliza portal próprio - não é possível gerar GNRE pelo sistema nacional`);
+                }
+                
                 if (!nfe.ufFavorecida || nfe.ufFavorecida.length !== 2) {
                     errors.push(`NF-e ${nfe.numero}: UF favorecida inválida`);
                 }
+                
                 if (!nfe.receita) {
                     errors.push(`NF-e ${nfe.numero}: Receita não selecionada`);
+                } else if (ufRule && !ufRule.receitas.includes(nfe.receita)) {
+                    errors.push(`NF-e ${nfe.numero}: Receita ${nfe.receita} não habilitada para ${nfe.ufFavorecida}`);
                 }
+                
+                // Validar detalhamento se necessário
+                if (ufRule && ufRule.detalhamentos && ufRule.detalhamentos[nfe.receita] && ufRule.detalhamentos[nfe.receita].length > 0) {
+                    const detalhamentoSelect = document.getElementById('detalhamento');
+                    if (!detalhamentoSelect || !detalhamentoSelect.value) {
+                        errors.push(`NF-e ${nfe.numero}: Detalhamento da receita obrigatório para ${nfe.ufFavorecida}`);
+                    }
+                }
+                
+                // ✅ NOVA VALIDAÇÃO: Códigos IBGE dos municípios
+                if (nfe.emitente && nfe.emitente.municipio) {
+                    if (!validateMunicipioIBGE(nfe.emitente.municipio, nfe.emitente.uf)) {
+                        errors.push(`NF-e ${nfe.numero}: Código IBGE do município do emitente inválido (${nfe.emitente.municipio}) para UF ${nfe.emitente.uf}`);
+                    }
+                }
+                
+                if (nfe.destinatario && nfe.destinatario.municipio) {
+                    if (!validateMunicipioIBGE(nfe.destinatario.municipio, nfe.ufFavorecida)) {
+                        errors.push(`NF-e ${nfe.numero}: Código IBGE do município do destinatário inválido (${nfe.destinatario.municipio}) para UF ${nfe.ufFavorecida}`);
+                    }
+                }
+                
+                // Validar campos manuais obrigatórios individuais
+                if (ufRule && ufRule.camposManuais) {
+                    if (ufRule.camposManuais.includes('produto') && (!nfe.camposManuais?.produto || !nfe.camposManuais.produto.trim())) {
+                        warnings.push(`NF-e ${nfe.numero}: Código do produto obrigatório para ${nfe.ufFavorecida} - clique no ícone 📝 para preencher`);
+                    }
+                    
+                    if (ufRule.camposManuais.includes('convenio') && (!nfe.camposManuais?.convenio || !nfe.camposManuais.convenio.trim())) {
+                        warnings.push(`NF-e ${nfe.numero}: Número do convênio recomendado para ${nfe.ufFavorecida} - clique no ícone 📝 para preencher`);
+                    }
+                }
+                
                 if (!nfe.emitente.cnpj) {
                     warnings.push(`NF-e ${nfe.numero}: CNPJ do emitente não encontrado`);
                 }
+                
                 if (parseFloat(nfe.valorICMSST) <= 0) {
                     warnings.push(`NF-e ${nfe.numero}: ICMS ST zerado ou negativo - verifique o XML`);
                 }
@@ -866,33 +1831,110 @@
                 return;
             }
             
-            let xmlContent = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+            // Gerar XML no formato correto da GNRE (SEGUNDO O SITE OFICIAL)
+            let xmlContent = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n`;
             xmlContent += `<TLote_GNRE xmlns="http://www.gnre.pe.gov.br" versao="2.00">\n`;
             xmlContent += `  <guias>\n`;
             
             nfesData.forEach(nfe => {
                 xmlContent += `    <TDadosGNRE versao="2.00">\n`;
-                xmlContent += `      <c01_UfFavorecida>${nfe.ufFavorecida}</c01_UfFavorecida>\n`;
-                xmlContent += `      <c02_receita>${nfe.receita}</c02_receita>\n`;
-                xmlContent += `      <c03_idContribuinteEmitente>\n`;
-                xmlContent += `        <CNPJ>${nfe.emitente.cnpj}</CNPJ>\n`;
-                xmlContent += `      </c03_idContribuinteEmitente>\n`;
-                xmlContent += `      <c04_docOrigem>${nfe.documentoOrigem}</c04_docOrigem>\n`;
-                xmlContent += `      <c28_tipoDocOrigem>${nfe.tipoDocumentoOrigem}</c28_tipoDocOrigem>\n`;
-                xmlContent += `      <c05_referencia>\n`;
-                xmlContent += `        <codigo>0</codigo>\n`;
-                xmlContent += `        <mes>${nfe.periodo.mes}</mes>\n`;
-                xmlContent += `        <ano>${nfe.periodo.ano}</ano>\n`;
-                xmlContent += `      </c05_referencia>\n`;
-                xmlContent += `      <c06_valorPrincipal>${parseFloat(nfe.valorICMSST).toFixed(2)}</c06_valorPrincipal>\n`;
-                xmlContent += `      <c10_valorTotal>${parseFloat(nfe.valorICMSST).toFixed(2)}</c10_valorTotal>\n`;
-                xmlContent += `      <c14_dataVencimento>${nfe.dataVencimento}</c14_dataVencimento>\n`;
-                xmlContent += `      <c16_razaoSocialEmitente>${escapeXML(nfe.emitente.razaoSocial)}</c16_razaoSocialEmitente>\n`;
+                xmlContent += `      <ufFavorecida>${nfe.ufFavorecida}</ufFavorecida>\n`;
+                xmlContent += `      <tipoGnre>0</tipoGnre>\n`;
+                xmlContent += `      <contribuinteEmitente>\n`;
+                xmlContent += `        <identificacao>\n`;
+                xmlContent += `          <CNPJ>${nfe.emitente.cnpj}</CNPJ>\n`;
+                xmlContent += `        </identificacao>\n`;
+                xmlContent += `        <razaoSocial>${escapeXML(nfe.emitente.razaoSocial)}</razaoSocial>\n`;
                 
-                if (nfe.emitente.ie) {
-                    xmlContent += `      <c17_inscricaoEstadualEmitente>${nfe.emitente.ie}</c17_inscricaoEstadualEmitente>\n`;
+                // ELEMENTOS OPCIONAIS DO EMITENTE (conforme site oficial)
+                if (nfe.emitente.endereco && nfe.emitente.endereco.trim()) {
+                    xmlContent += `        <endereco>${escapeXML(nfe.emitente.endereco)}</endereco>\n`;
+                }
+                if (nfe.emitente.municipio && nfe.emitente.municipio.trim()) {
+                    xmlContent += `        <municipio>${nfe.emitente.municipio}</municipio>\n`;
+                }
+                if (nfe.emitente.uf && nfe.emitente.uf.trim()) {
+                    xmlContent += `        <uf>${nfe.emitente.uf}</uf>\n`;
+                }
+                if (nfe.emitente.cep && nfe.emitente.cep.trim()) {
+                    xmlContent += `        <cep>${nfe.emitente.cep}</cep>\n`;
+                }
+                if (nfe.emitente.telefone && nfe.emitente.telefone.trim()) {
+                    xmlContent += `        <telefone>${nfe.emitente.telefone}</telefone>\n`;
                 }
                 
+                xmlContent += `      </contribuinteEmitente>\n`;
+                xmlContent += `      <itensGNRE>\n`;
+                xmlContent += `        <item>\n`;
+                xmlContent += `          <receita>${nfe.receita}</receita>\n`;
+                
+                // ✅ ORDEM CORRETA BASEADA NO SITE OFICIAL:
+                
+                // 1. Detalhamento (se aplicável) - IMEDIATAMENTE após receita
+                const detalhamentoSelect = document.getElementById('detalhamento');
+                if (detalhamentoSelect && detalhamentoSelect.value) {
+                    xmlContent += `          <detalhamentoReceita>${detalhamentoSelect.value}</detalhamentoReceita>\n`;
+                }
+                
+                // 2. Documento de Origem - SEGUNDO elemento
+                // ✅ CORREÇÃO: Tipo de documento por UF (AGORA EDITÁVEL)
+                const ufRule = ufRules[nfe.ufFavorecida];
+                let tipoDocumento = ufRule?.tipoDocumentoOrigem || '10';
+                let numeroDocumento = nfe.numero;
+                
+                if (nfe.chave && nfe.chave.length === 44) {
+                    numeroDocumento = nfe.chave;
+                }
+                
+                xmlContent += `          <documentoOrigem tipo="${tipoDocumento}">${numeroDocumento}</documentoOrigem>\n`;
+                
+                // 3. Produto (se aplicável) - TERCEIRO elemento
+                if (ufRule && ufRule.camposManuais && nfe.camposManuais) {
+                    if (ufRule.camposManuais.includes('produto') && nfe.camposManuais.produto) {
+                        xmlContent += `          <produto>${escapeXML(nfe.camposManuais.produto.trim())}</produto>\n`;
+                    }
+                }
+                
+                // 4. Referência - QUARTO elemento
+                xmlContent += `          <referencia>\n`;
+                xmlContent += `            <periodo>0</periodo>\n`;
+                xmlContent += `            <mes>${nfe.periodo.mes}</mes>\n`;
+                xmlContent += `            <ano>${nfe.periodo.ano}</ano>\n`;
+                xmlContent += `          </referencia>\n`;
+                
+                // 5. Data de Vencimento - QUINTO elemento
+                xmlContent += `          <dataVencimento>${nfe.dataVencimento}</dataVencimento>\n`;
+                
+                // 6. Valor - SEXTO elemento
+                xmlContent += `          <valor tipo="11">${parseFloat(nfe.valorICMSST).toFixed(2)}</valor>\n`;
+                
+                // 7. Convênio (se aplicável) - SÉTIMO elemento
+                if (ufRule && ufRule.camposManuais && nfe.camposManuais) {
+                    if (ufRule.camposManuais.includes('convenio') && nfe.camposManuais.convenio) {
+                        xmlContent += `          <convenio>${escapeXML(nfe.camposManuais.convenio.trim())}</convenio>\n`;
+                    }
+                }
+                
+                // 8. Contribuinte Destinatário - OITAVO elemento (DENTRO do item)
+                xmlContent += `          <contribuinteDestinatario>\n`;
+                xmlContent += `            <identificacao>\n`;
+                xmlContent += `              <CNPJ>${nfe.destinatario.cnpj}</CNPJ>\n`;
+                xmlContent += `            </identificacao>\n`;
+                xmlContent += `            <razaoSocial>${escapeXML(nfe.destinatario.razaoSocial)}</razaoSocial>\n`;
+                xmlContent += `            <municipio>${nfe.destinatario.municipio}</municipio>\n`;
+                xmlContent += `          </contribuinteDestinatario>\n`;
+                
+                // 9. Número de Controle (se aplicável) - NONO elemento
+                if (ufRule && ufRule.camposManuais && nfe.camposManuais) {
+                    if (ufRule.camposManuais.includes('numeroControle') && nfe.camposManuais.numeroControle) {
+                        xmlContent += `          <numeroControle>${escapeXML(nfe.camposManuais.numeroControle.trim())}</numeroControle>\n`;
+                    }
+                }
+                
+                xmlContent += `        </item>\n`;
+                xmlContent += `      </itensGNRE>\n`;
+                xmlContent += `      <valorGNRE>${parseFloat(nfe.valorICMSST).toFixed(2)}</valorGNRE>\n`;
+                xmlContent += `      <dataPagamento>${nfe.dataVencimento}</dataPagamento>\n`;
                 xmlContent += `    </TDadosGNRE>\n`;
             });
             
@@ -920,7 +1962,7 @@
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
-                .replace(/'/g, '&apos;');
+                .replace(/'/g, '&#39;');
         }
 
         function downloadXML() {
@@ -966,6 +2008,39 @@
                     }
                 }, 10000);
             }
+        }
+
+        // Função auxiliar para obter regras padrão
+        function getDefaultUfRules() {
+            return {
+                'AC': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'numeroControle'], tipoDocumentoOrigem: '22' },
+                'AL': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '22' },
+                'AP': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio'], tipoDocumentoOrigem: '22' },
+                'AM': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '22' },
+                'BA': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'numeroControle'], tipoDocumentoOrigem: '22' },
+                'CE': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio'], tipoDocumentoOrigem: '22' },
+                'DF': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '22' },
+                'ES': { portalGNRE: false, receitas: [], camposManuais: [], tipoDocumentoOrigem: '10' },
+                'GO': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'numeroControle'], tipoDocumentoOrigem: '22' },
+                'MA': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '22' },
+                'MT': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'numeroControle'], tipoDocumentoOrigem: '22' },
+                'MS': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio'], tipoDocumentoOrigem: '22' },
+                'MG': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '55' },
+                'PA': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio'], tipoDocumentoOrigem: '22' },
+                'PB': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '22' },
+                'PR': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'numeroControle'], tipoDocumentoOrigem: '22' },
+                'PE': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '22' },
+                'PI': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio'], tipoDocumentoOrigem: '22' },
+                'RJ': { portalGNRE: false, receitas: [], camposManuais: [], tipoDocumentoOrigem: '10' },
+                'RN': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '22' },
+                'RS': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'numeroControle'], tipoDocumentoOrigem: '22' },
+                'RO': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '22' },
+                'RR': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio'], tipoDocumentoOrigem: '22' },
+                'SC': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'numeroControle'], tipoDocumentoOrigem: '22' },
+                'SP': { portalGNRE: false, receitas: [], camposManuais: [], tipoDocumentoOrigem: '10' },
+                'SE': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '22' },
+                'TO': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio'], tipoDocumentoOrigem: '22' }
+            };
         }
 
         // Inicialização
