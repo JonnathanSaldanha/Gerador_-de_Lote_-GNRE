@@ -742,48 +742,196 @@
                 receitas: ['100099', '100102', '100129'],
                 camposManuais: ['produto', 'convenio', 'numeroControle'],
                 tipoDocumentoOrigem: '22',
-                observacao: 'Configuração padrão AC - usar código município 5 dígitos'
+                detalhamentos: {
+                    '100099': ['000004', '000021', '000036', '000037']
+                },
+                produtos: {
+                    '79': 'Açúcar de cana', '36': 'Agricultura', '1': 'Aguardente', '48': 'Álcool Etílico Anidro',
+                    '49': 'Álcool Etílico Hidratado', '2': 'Álcool Etílico Hidratado Combustível', '3': 'Aparelhos Celulares',
+                    '70': 'Aquisição de mercadorias de forma não presencial', '43': 'Artefatos de Uso Doméstico',
+                    '47': 'Artigos de Papelaria', '4': 'Bebidas Alcoólicas', '85': 'Bebidas hidroeletrolíticas',
+                    '81': 'Bebidas Quentes', '40': 'Bicicletas e Peças', '50': 'Biodiesel B100', '44': 'Brinquedos',
+                    '71': 'Café Torrado e moído', '72': 'Calçados', '5': 'Cervejas, Chopes, Refrigerantes',
+                    '73': 'Chocolates e preparações similares', '6': 'Cigarros', '7': 'Cimento', '8': 'Combustíveis e Lubrificantes',
+                    '33': 'Comércio Outros não especificados', '38': 'Comunicação', '59': 'Coque', '9': 'Cosméticos, Perfumaria',
+                    '66': 'Derivados de petróleo', '10': 'Discos Fonográficos', '11': 'Eletrodomésticos', '39': 'Energia Elétrica',
+                    '78': 'Extrato concentrados', '41': 'Ferramentas', '12': 'Filmes Fotográficos', '13': 'Gado e Produtos',
+                    '63': 'Gás Liquefeito de Petróleo', '62': 'Gás Natural', '51': 'Gasolina A', '52': 'Gasolina C',
+                    '53': 'Gasolina de Aviação', '84': 'ICMS Complementar', '34': 'Indústria não especificados',
+                    '42': 'Instrumentos Musicais', '74': 'Iogurte', '77': 'Ladrilhos', '14': 'Lâminas de Barbear',
+                    '15': 'Lâmpadas Elétricas', '64': 'Lubrificantes', '75': 'Luvas Cirúrgicas', '45': 'Máquinas e Aparelhos',
+                    '16': 'Marketing Porta-a-Porta', '17': 'Massas Alimentícias', '18': 'Materiais de Construção',
+                    '19': 'Materiais de Limpeza', '46': 'Material Elétrico', '69': 'Motocicletas', '60': 'Óleo Combustível',
+                    '61': 'Óleo de Xisto', '54': 'Óleo Diesel A', '55': 'Óleo Diesel B', '65': 'Outros Produtos',
+                    '20': 'Peças para Autopropulsados', '35': 'Pecuária', '21': 'Pilhas, Baterias', '22': 'Pneumáticos',
+                    '68': 'Produtos alimentícios', '58': 'Produtos Asfálticos', '76': 'Produtos Cerâmicos',
+                    '23': 'Produtos Farmacêuticos', '83': 'Provisionamento', '56': 'Querosene de Aviação',
+                    '57': 'Querosene Iluminante', '24': 'Rações tipo pet', '80': 'Salgados Industrializados',
+                    '25': 'Sorvetes', '26': 'Suportes Elásticos', '82': 'Telecomunicações', '32': 'Telhas',
+                    '27': 'Tintas, Vernizes', '37': 'Transporte', '28': 'Trigo, Farinha', '29': 'Veículos 4 rodas',
+                    '30': 'Veículos Faturamento Direto', '31': 'Veículos 2 rodas'
+                },
+                exigeReferencia: true,
+                exigeContribuinteDestinatario: true,
+                observacao: 'AC exige detalhamento para receita 100099'
             },
             'AL': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
                 camposManuais: ['produto'],
                 tipoDocumentoOrigem: '22',
+                produtos: {
+                    '1': 'Aguardente', '2': 'Álcool Etílico Hidratado Combustível', '3': 'Aparelhos Celulares',
+                    '47': 'Artigos de Papelaria', '4': 'Bebidas Alcoólicas', '5': 'Cervejas, Chopes, Refrigerantes',
+                    '6': 'Cigarros', '7': 'Cimento', '8': 'Combustíveis e Lubrificantes', '9': 'Cosméticos, Perfumaria',
+                    '10': 'Discos Fonográficos', '11': 'Eletrodomésticos', '41': 'Ferramentas', '12': 'Filmes Fotográficos',
+                    '13': 'Gado e Produtos', '14': 'Lâminas de Barbear', '15': 'Lâmpadas Elétricas', '45': 'Máquinas e Aparelhos',
+                    '16': 'Marketing Porta-a-Porta', '17': 'Massas Alimentícias', '18': 'Materiais de Construção',
+                    '19': 'Materiais de Limpeza', '46': 'Material Elétrico', '20': 'Peças para Autopropulsados',
+                    '21': 'Pilhas, Baterias', '22': 'Pneumáticos', '68': 'Produtos alimentícios', '23': 'Produtos Farmacêuticos',
+                    '24': 'Rações tipo pet', '25': 'Sorvetes', '26': 'Suportes Elásticos', '32': 'Telhas',
+                    '27': 'Tintas, Vernizes', '28': 'Trigo, Farinha', '29': 'Veículos 4 rodas', '30': 'Veículos Faturamento Direto',
+                    '31': 'Veículos 2 rodas'
+                },
+                exigeReferencia: false,
+                exigeContribuinteDestinatario: true,
                 observacao: 'Configuração padrão AL'
-            },
-            'AP': { 
-                portalGNRE: true, 
-                receitas: ['100099', '100102', '100129'],
-                camposManuais: ['produto', 'convenio'],
-                tipoDocumentoOrigem: '22',
-                observacao: 'Configuração padrão AP'
             },
             'AM': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
                 camposManuais: ['produto'],
                 tipoDocumentoOrigem: '22',
+                produtos: {
+                    '79': 'Açúcar de cana', '36': 'Agricultura', '1': 'Aguardente', '48': 'Álcool Etílico Anidro',
+                    '49': 'Álcool Etílico Hidratado', '2': 'Álcool Etílico Hidratado Combustível', '3': 'Aparelhos Celulares',
+                    '70': 'Aquisição de mercadorias de forma não presencial', '43': 'Artefatos de Uso Doméstico',
+                    '47': 'Artigos de Papelaria', '86': 'Bebidas', '4': 'Bebidas Alcoólicas', '85': 'Bebidas hidroeletrolíticas',
+                    '81': 'Bebidas Quentes', '40': 'Bicicletas e Peças', '50': 'Biodiesel B100', '44': 'Brinquedos',
+                    '71': 'Café Torrado e moído', '72': 'Calçados', '5': 'Cervejas, Chopes, Refrigerantes',
+                    '73': 'Chocolates e preparações similares', '6': 'Cigarros', '7': 'Cimento', '8': 'Combustíveis e Lubrificantes',
+                    '33': 'Comércio Outros não especificados', '38': 'Comunicação', '59': 'Coque', '9': 'Cosméticos, Perfumaria',
+                    '66': 'Derivados de petróleo', '10': 'Discos Fonográficos', '11': 'Eletrodomésticos', '39': 'Energia Elétrica',
+                    '87': 'Energia Elétrica - Consumidores Livres', '78': 'Extrato concentrados', '41': 'Ferramentas',
+                    '12': 'Filmes Fotográficos', '13': 'Gado e Produtos', '63': 'Gás Liquefeito de Petróleo', '62': 'Gás Natural',
+                    '51': 'Gasolina A', '52': 'Gasolina C', '53': 'Gasolina de Aviação', '84': 'ICMS Complementar',
+                    '34': 'Indústria não especificados', '42': 'Instrumentos Musicais', '74': 'Iogurte', '77': 'Ladrilhos',
+                    '14': 'Lâminas de Barbear', '15': 'Lâmpadas Elétricas', '64': 'Lubrificantes', '75': 'Luvas Cirúrgicas',
+                    '45': 'Máquinas e Aparelhos', '16': 'Marketing Porta-a-Porta', '17': 'Massas Alimentícias',
+                    '18': 'Materiais de Construção', '19': 'Materiais de Limpeza', '46': 'Material Elétrico', '69': 'Motocicletas',
+                    '60': 'Óleo Combustível', '61': 'Óleo de Xisto', '54': 'Óleo Diesel A', '55': 'Óleo Diesel B',
+                    '89': 'Outros', '65': 'Outros Produtos', '90': 'Peças para Veículos', '20': 'Peças para Autopropulsados',
+                    '35': 'Pecuária', '21': 'Pilhas, Baterias', '22': 'Pneumáticos', '68': 'Produtos alimentícios',
+                    '58': 'Produtos Asfálticos', '76': 'Produtos Cerâmicos', '23': 'Produtos Farmacêuticos',
+                    '83': 'Provisionamento', '56': 'Querosene de Aviação', '57': 'Querosene Iluminante', '24': 'Rações tipo pet',
+                    '80': 'Salgados Industrializados', '25': 'Sorvetes', '26': 'Suportes Elásticos', '82': 'Telecomunicações',
+                    '32': 'Telhas', '27': 'Tintas, Vernizes', '37': 'Transporte', '28': 'Trigo, Farinha', '29': 'Veículos 4 rodas',
+                    '30': 'Veículos Faturamento Direto', '31': 'Veículos 2 rodas', '88': 'Veículos e Pneumáticos'
+                },
+                exigeReferencia: true,
+                exigeContribuinteDestinatario: true,
                 observacao: 'Configuração padrão AM'
+            },
+            'AP': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto', 'convenio'],
+                tipoDocumentoOrigem: '10',
+                produtos: {},
+                exigeReferencia: true,
+                exigeContribuinteDestinatario: true,
+                observacao: 'AP exige chave de acesso da NFe'
             },
             'BA': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
                 camposManuais: ['produto', 'convenio', 'numeroControle'],
-                tipoDocumentoOrigem: '22',
-                observacao: 'Exige código de produto para ICMS ST'
+                tipoDocumentoOrigem: '10',
+                produtos: {
+                    '79': 'Açúcar de cana', '36': 'Agricultura', '1': 'Aguardente', '48': 'Álcool Etílico Anidro',
+                    '49': 'Álcool Etílico Hidratado', '2': 'Álcool Etílico Hidratado Combustível', '3': 'Aparelhos Celulares',
+                    '70': 'Aquisição de mercadorias de forma não presencial', '43': 'Artefatos de Uso Doméstico',
+                    '47': 'Artigos de Papelaria', '4': 'Bebidas Alcoólicas', '81': 'Bebidas Quentes', '40': 'Bicicletas e Peças',
+                    '50': 'Biodiesel B100', '44': 'Brinquedos', '71': 'Café Torrado e moído', '72': 'Calçados',
+                    '5': 'Cervejas, Chopes, Refrigerantes', '73': 'Chocolates e preparações similares', '6': 'Cigarros',
+                    '7': 'Cimento', '8': 'Combustíveis e Lubrificantes', '33': 'Comércio Outros não especificados',
+                    '38': 'Comunicação', '59': 'Coque', '9': 'Cosméticos, Perfumaria', '66': 'Derivados de petróleo',
+                    '10': 'Discos Fonográficos', '11': 'Eletrodomésticos', '39': 'Energia Elétrica', '78': 'Extrato concentrados',
+                    '41': 'Ferramentas', '12': 'Filmes Fotográficos', '13': 'Gado e Produtos', '63': 'Gás Liquefeito de Petróleo',
+                    '62': 'Gás Natural', '51': 'Gasolina A', '52': 'Gasolina C', '53': 'Gasolina de Aviação',
+                    '34': 'Indústria não especificados', '42': 'Instrumentos Musicais', '74': 'Iogurte', '77': 'Ladrilhos',
+                    '14': 'Lâminas de Barbear', '15': 'Lâmpadas Elétricas', '64': 'Lubrificantes', '75': 'Luvas Cirúrgicas',
+                    '45': 'Máquinas e Aparelhos', '16': 'Marketing Porta-a-Porta', '17': 'Massas Alimentícias',
+                    '18': 'Materiais de Construção', '19': 'Materiais de Limpeza', '46': 'Material Elétrico', '69': 'Motocicletas',
+                    '60': 'Óleo Combustível', '61': 'Óleo de Xisto', '54': 'Óleo Diesel A', '55': 'Óleo Diesel B',
+                    '65': 'Outros Produtos', '20': 'Peças para Autopropulsados', '35': 'Pecuária', '21': 'Pilhas, Baterias',
+                    '22': 'Pneumáticos', '68': 'Produtos alimentícios', '58': 'Produtos Asfálticos', '76': 'Produtos Cerâmicos',
+                    '23': 'Produtos Farmacêuticos', '56': 'Querosene de Aviação', '57': 'Querosene Iluminante',
+                    '24': 'Rações tipo pet', '80': 'Salgados Industrializados', '25': 'Sorvetes', '26': 'Suportes Elásticos',
+                    '82': 'Telecomunicações', '32': 'Telhas', '27': 'Tintas, Vernizes', '37': 'Transporte', '28': 'Trigo, Farinha',
+                    '29': 'Veículos 4 rodas', '30': 'Veículos Faturamento Direto', '31': 'Veículos 2 rodas', '88': 'Veículos e Pneumáticos'
+                },
+                exigeReferencia: true,
+                exigeContribuinteDestinatario: false,
+                observacao: 'BA exige código de produto para ICMS ST'
             },
             'CE': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
                 camposManuais: ['produto', 'convenio'],
-                tipoDocumentoOrigem: '22',
+                tipoDocumentoOrigem: '10',
+                produtos: {
+                    '79': 'Açúcar de cana', '36': 'Agricultura', '1': 'Aguardente', '48': 'Álcool Etílico Anidro',
+                    '49': 'Álcool Etílico Hidratado', '2': 'Álcool Etílico Hidratado Combustível', '3': 'Aparelhos Celulares',
+                    '86': 'Bebidas', '4': 'Bebidas Alcoólicas', '85': 'Bebidas hidroeletrolíticas', '81': 'Bebidas Quentes',
+                    '71': 'Café Torrado e moído', '72': 'Calçados', '5': 'Cervejas, Chopes, Refrigerantes', '6': 'Cigarros',
+                    '7': 'Cimento', '8': 'Combustíveis e Lubrificantes', '66': 'Derivados de petróleo', '39': 'Energia Elétrica',
+                    '87': 'Energia Elétrica - Consumidores Livres', '78': 'Extrato concentrados', '13': 'Gado e Produtos',
+                    '63': 'Gás Liquefeito de Petróleo', '62': 'Gás Natural', '51': 'Gasolina A', '52': 'Gasolina C',
+                    '53': 'Gasolina de Aviação', '14': 'Lâminas de Barbear', '15': 'Lâmpadas Elétricas', '64': 'Lubrificantes',
+                    '16': 'Marketing Porta-a-Porta', '17': 'Massas Alimentícias', '18': 'Materiais de Construção',
+                    '69': 'Motocicletas', '60': 'Óleo Combustível', '61': 'Óleo de Xisto', '54': 'Óleo Diesel A',
+                    '55': 'Óleo Diesel B', '65': 'Outros Produtos', '90': 'Peças para Veículos', '20': 'Peças para Autopropulsados',
+                    '22': 'Pneumáticos', '58': 'Produtos Asfálticos', '23': 'Produtos Farmacêuticos', '83': 'Provisionamento',
+                    '56': 'Querosene de Aviação', '57': 'Querosene Iluminante', '24': 'Rações tipo pet', '80': 'Salgados Industrializados',
+                    '25': 'Sorvetes', '82': 'Telecomunicações', '32': 'Telhas', '27': 'Tintas, Vernizes', '28': 'Trigo, Farinha',
+                    '29': 'Veículos 4 rodas', '30': 'Veículos Faturamento Direto', '31': 'Veículos 2 rodas', '88': 'Veículos e Pneumáticos'
+                },
+                exigeReferencia: false,
+                exigeContribuinteDestinatario: true,
                 observacao: 'Configuração padrão CE'
             },
             'DF': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
                 camposManuais: ['produto'],
-                tipoDocumentoOrigem: '22',
+                tipoDocumentoOrigem: '10',
+                produtos: {
+                    '79': 'Açúcar de cana', '36': 'Agricultura', '1': 'Aguardente', '48': 'Álcool Etílico Anidro',
+                    '49': 'Álcool Etílico Hidratado', '2': 'Álcool Etílico Hidratado Combustível', '3': 'Aparelhos Celulares',
+                    '70': 'Aquisição de mercadorias de forma não presencial', '43': 'Artefatos de Uso Doméstico',
+                    '47': 'Artigos de Papelaria', '4': 'Bebidas Alcoólicas', '81': 'Bebidas Quentes', '40': 'Bicicletas e Peças',
+                    '50': 'Biodiesel B100', '44': 'Brinquedos', '71': 'Café Torrado e moído', '72': 'Calçados',
+                    '5': 'Cervejas, Chopes, Refrigerantes', '73': 'Chocolates e preparações similares', '6': 'Cigarros',
+                    '7': 'Cimento', '8': 'Combustíveis e Lubrificantes', '33': 'Comércio Outros não especificados',
+                    '38': 'Comunicação', '59': 'Coque', '9': 'Cosméticos, Perfumaria', '66': 'Derivados de petróleo',
+                    '10': 'Discos Fonográficos', '11': 'Eletrodomésticos', '39': 'Energia Elétrica', '78': 'Extrato concentrados',
+                    '41': 'Ferramentas', '12': 'Filmes Fotográficos', '13': 'Gado e Produtos', '63': 'Gás Liquefeito de Petróleo',
+                    '62': 'Gás Natural', '51': 'Gasolina A', '52': 'Gasolina C', '53': 'Gasolina de Aviação',
+                    '34': 'Indústria não especificados', '42': 'Instrumentos Musicais', '74': 'Iogurte', '77': 'Ladrilhos',
+                    '14': 'Lâminas de Barbear', '15': 'Lâmpadas Elétricas', '64': 'Lubrificantes', '75': 'Luvas Cirúrgicas',
+                    '45': 'Máquinas e Aparelhos', '16': 'Marketing Porta-a-Porta', '17': 'Massas Alimentícias',
+                    '18': 'Materiais de Construção', '19': 'Materiais de Limpeza', '46': 'Material Elétrico', '69': 'Motocicletas',
+                    '60': 'Óleo Combustível', '61': 'Óleo de Xisto', '54': 'Óleo Diesel A', '55': 'Óleo Diesel B',
+                    '65': 'Outros Produtos', '20': 'Peças para Autopropulsados', '35': 'Pecuária', '21': 'Pilhas, Baterias',
+                    '22': 'Pneumáticos', '68': 'Produtos alimentícios', '58': 'Produtos Asfálticos', '76': 'Produtos Cerâmicos',
+                    '23': 'Produtos Farmacêuticos', '56': 'Querosene de Aviação', '57': 'Querosene Iluminante',
+                    '24': 'Rações tipo pet', '80': 'Salgados Industrializados', '25': 'Sorvetes', '26': 'Suportes Elásticos',
+                    '82': 'Telecomunicações', '32': 'Telhas', '27': 'Tintas, Vernizes', '37': 'Transporte', '28': 'Trigo, Farinha',
+                    '29': 'Veículos 4 rodas', '30': 'Veículos Faturamento Direto', '31': 'Veículos 2 rodas'
+                },
+                exigeReferencia: true,
+                exigeContribuinteDestinatario: false,
                 observacao: 'Configuração padrão DF'
             },
             'ES': { 
@@ -805,7 +953,81 @@
                 receitas: ['100099', '100102', '100129'],
                 camposManuais: ['produto'],
                 tipoDocumentoOrigem: '22',
-                observacao: 'Configuração padrão MA'
+                detalhamentos: {
+                    '100099': ['000006', '000013', '000017', '000020', '000022', '000035']
+                },
+                produtos: {
+                    '79': 'Açúcar de cana', '36': 'Agricultura', '1': 'Aguardente', '48': 'Álcool Etílico Anidro',
+                    '49': 'Álcool Etílico Hidratado', '2': 'Álcool Etílico Hidratado Combustível', '3': 'Aparelhos Celulares',
+                    '70': 'Aquisição de mercadorias de forma não presencial', '43': 'Artefatos de Uso Doméstico',
+                    '47': 'Artigos de Papelaria', '86': 'Bebidas', '4': 'Bebidas Alcoólicas', '85': 'Bebidas hidroeletrolíticas',
+                    '81': 'Bebidas Quentes', '40': 'Bicicletas e Peças', '50': 'Biodiesel B100', '44': 'Brinquedos',
+                    '71': 'Café Torrado e moído', '72': 'Calçados', '5': 'Cervejas, Chopes, Refrigerantes',
+                    '73': 'Chocolates e preparações similares', '6': 'Cigarros', '7': 'Cimento', '8': 'Combustíveis e Lubrificantes',
+                    '33': 'Comércio Outros não especificados', '38': 'Comunicação', '59': 'Coque', '9': 'Cosméticos, Perfumaria',
+                    '66': 'Derivados de petróleo', '10': 'Discos Fonográficos', '11': 'Eletrodomésticos', '39': 'Energia Elétrica',
+                    '87': 'Energia Elétrica - Consumidores Livres', '78': 'Extrato concentrados', '41': 'Ferramentas',
+                    '12': 'Filmes Fotográficos', '13': 'Gado e Produtos', '63': 'Gás Liquefeito de Petróleo', '62': 'Gás Natural',
+                    '51': 'Gasolina A', '52': 'Gasolina C', '53': 'Gasolina de Aviação', '84': 'ICMS Complementar',
+                    '34': 'Indústria não especificados', '42': 'Instrumentos Musicais', '74': 'Iogurte', '77': 'Ladrilhos',
+                    '14': 'Lâminas de Barbear', '15': 'Lâmpadas Elétricas', '64': 'Lubrificantes', '75': 'Luvas Cirúrgicas',
+                    '45': 'Máquinas e Aparelhos', '16': 'Marketing Porta-a-Porta', '17': 'Massas Alimentícias',
+                    '18': 'Materiais de Construção', '19': 'Materiais de Limpeza', '46': 'Material Elétrico', '69': 'Motocicletas',
+                    '60': 'Óleo Combustível', '61': 'Óleo de Xisto', '54': 'Óleo Diesel A', '55': 'Óleo Diesel B',
+                    '89': 'Outros', '65': 'Outros Produtos', '90': 'Peças para Veículos', '20': 'Peças para Autopropulsados',
+                    '35': 'Pecuária', '21': 'Pilhas, Baterias', '22': 'Pneumáticos', '68': 'Produtos alimentícios',
+                    '58': 'Produtos Asfálticos', '76': 'Produtos Cerâmicos', '23': 'Produtos Farmacêuticos',
+                    '83': 'Provisionamento', '56': 'Querosene de Aviação', '57': 'Querosene Iluminante', '24': 'Rações tipo pet',
+                    '80': 'Salgados Industrializados', '25': 'Sorvetes', '26': 'Suportes Elásticos', '82': 'Telecomunicações',
+                    '32': 'Telhas', '27': 'Tintas, Vernizes', '37': 'Transporte', '28': 'Trigo, Farinha', '29': 'Veículos 4 rodas',
+                    '30': 'Veículos Faturamento Direto', '31': 'Veículos 2 rodas', '88': 'Veículos e Pneumáticos'
+                },
+                exigeReferencia: true,
+                exigeContribuinteDestinatario: true,
+                observacao: 'MA exige detalhamento para receita 100099'
+            },
+            'MG': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto'],
+                tipoDocumentoOrigem: '55',
+                detalhamentos: { '100129': ['000051', '000052'] },
+                produtos: {},
+                exigeReferencia: true,
+                exigeContribuinteDestinatario: true,
+                observacao: 'MG usa tipo 55 para NF-e'
+            },
+            'MS': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto', 'convenio'],
+                tipoDocumentoOrigem: '10',
+                produtos: {
+                    '79': 'Açúcar de cana', '36': 'Agricultura', '1': 'Aguardente', '48': 'Álcool Etílico Anidro',
+                    '49': 'Álcool Etílico Hidratado', '2': 'Álcool Etílico Hidratado Combustível', '3': 'Aparelhos Celulares',
+                    '70': 'Aquisição de mercadorias de forma não presencial', '43': 'Artefatos de Uso Doméstico',
+                    '47': 'Artigos de Papelaria', '4': 'Bebidas Alcoólicas', '40': 'Bicicletas e Peças', '50': 'Biodiesel B100',
+                    '44': 'Brinquedos', '71': 'Café Torrado e moído', '72': 'Calçados', '5': 'Cervejas, Chopes, Refrigerantes',
+                    '73': 'Chocolates e preparações similares', '6': 'Cigarros', '7': 'Cimento', '8': 'Combustíveis e Lubrificantes',
+                    '33': 'Comércio Outros não especificados', '38': 'Comunicação', '59': 'Coque', '9': 'Cosméticos, Perfumaria',
+                    '66': 'Derivados de petróleo', '10': 'Discos Fonográficos', '11': 'Eletrodomésticos', '39': 'Energia Elétrica',
+                    '78': 'Extrato concentrados', '41': 'Ferramentas', '12': 'Filmes Fotográficos', '13': 'Gado e Produtos',
+                    '63': 'Gás Liquefeito de Petróleo', '62': 'Gás Natural', '51': 'Gasolina A', '52': 'Gasolina C',
+                    '53': 'Gasolina de Aviação', '34': 'Indústria não especificados', '42': 'Instrumentos Musicais',
+                    '74': 'Iogurte', '77': 'Ladrilhos', '14': 'Lâminas de Barbear', '15': 'Lâmpadas Elétricas',
+                    '64': 'Lubrificantes', '75': 'Luvas Cirúrgicas', '45': 'Máquinas e Aparelhos', '16': 'Marketing Porta-a-Porta',
+                    '17': 'Massas Alimentícias', '18': 'Materiais de Construção', '19': 'Materiais de Limpeza',
+                    '46': 'Material Elétrico', '69': 'Motocicletas', '60': 'Óleo Combustível', '61': 'Óleo de Xisto',
+                    '54': 'Óleo Diesel A', '55': 'Óleo Diesel B', '65': 'Outros Produtos', '20': 'Peças para Autopropulsados',
+                    '35': 'Pecuária', '21': 'Pilhas, Baterias', '22': 'Pneumáticos', '68': 'Produtos alimentícios',
+                    '58': 'Produtos Asfálticos', '76': 'Produtos Cerâmicos', '23': 'Produtos Farmacêuticos',
+                    '56': 'Querosene de Aviação', '57': 'Querosene Iluminante', '24': 'Rações tipo pet', '80': 'Salgados Industrializados',
+                    '25': 'Sorvetes', '26': 'Suportes Elásticos', '32': 'Telhas', '27': 'Tintas, Vernizes', '37': 'Transporte',
+                    '28': 'Trigo, Farinha', '29': 'Veículos 4 rodas', '30': 'Veículos Faturamento Direto', '31': 'Veículos 2 rodas'
+                },
+                exigeReferencia: false,
+                exigeContribuinteDestinatario: true,
+                observacao: 'Configuração padrão MS'
             },
             'MT': { 
                 portalGNRE: true, 
@@ -819,34 +1041,65 @@
                 },
                 observacao: 'Configuração padrão MT'
             },
-            'MS': { 
-                portalGNRE: true, 
-                receitas: ['100099', '100102', '100129'],
-                camposManuais: ['produto', 'convenio'],
-                tipoDocumentoOrigem: '22',
-                observacao: 'Configuração padrão MS'
-            },
-            'MG': { 
-                portalGNRE: true, 
-                receitas: ['100099', '100102', '100129'],
-                camposManuais: ['produto'],
-                tipoDocumentoOrigem: '55',
-                detalhamentos: { '100129': ['000051', '000052'] },
-                observacao: 'MG usa tipo 55 para NF-e'
-            },
             'PA': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
                 camposManuais: ['produto', 'convenio'],
                 tipoDocumentoOrigem: '22',
-                observacao: 'Configuração padrão PA'
+                produtos: {},
+                exigeReferencia: true,
+                exigeContribuinteDestinatario: true,
+                observacao: 'PA exige chave da NFe como documento origem'
             },
             'PB': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
                 camposManuais: ['produto'],
+                tipoDocumentoOrigem: null,
+                produtos: {},
+                exigeReferencia: true,
+                exigeContribuinteDestinatario: false,
+                observacao: 'PB não exige documento de origem'
+            },
+            'PE': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto'],
                 tipoDocumentoOrigem: '22',
-                observacao: 'Configuração padrão PB'
+                produtos: {
+                    '1': 'Aguardente', '2': 'Álcool Etílico Hidratado Combustível', '40': 'Bicicletas e Peças',
+                    '44': 'Brinquedos', '5': 'Cervejas, Chopes, Refrigerantes', '6': 'Cigarros', '7': 'Cimento',
+                    '33': 'Comércio Outros não especificados', '9': 'Cosméticos, Perfumaria', '10': 'Discos Fonográficos',
+                    '11': 'Eletrodomésticos', '39': 'Energia Elétrica', '12': 'Filmes Fotográficos', '13': 'Gado e Produtos',
+                    '14': 'Lâminas de Barbear', '15': 'Lâmpadas Elétricas', '16': 'Marketing Porta-a-Porta',
+                    '17': 'Massas Alimentícias', '18': 'Materiais de Construção', '46': 'Material Elétrico',
+                    '91': 'Mercadoria Importada Exterior', '20': 'Peças para Autopropulsados', '21': 'Pilhas, Baterias',
+                    '22': 'Pneumáticos', '23': 'Produtos Farmacêuticos', '24': 'Rações tipo pet', '26': 'Suportes Elásticos',
+                    '82': 'Telecomunicações', '27': 'Tintas, Vernizes', '28': 'Trigo, Farinha', '29': 'Veículos 4 rodas',
+                    '30': 'Veículos Faturamento Direto', '31': 'Veículos 2 rodas'
+                },
+                exigeReferencia: false,
+                exigeContribuinteDestinatario: true,
+                observacao: 'PE aceita múltiplos documentos origem'
+            },
+            'PI': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto', 'convenio'],
+                tipoDocumentoOrigem: '10',
+                produtos: {
+                    '1': 'Aguardente', '2': 'Álcool Etílico Hidratado Combustível', '3': 'Aparelhos Celulares',
+                    '4': 'Bebidas Alcoólicas', '5': 'Cervejas, Chopes, Refrigerantes', '6': 'Cigarros', '7': 'Cimento',
+                    '8': 'Combustíveis e Lubrificantes', '33': 'Comércio Outros não especificados', '9': 'Cosméticos, Perfumaria',
+                    '10': 'Discos Fonográficos', '12': 'Filmes Fotográficos', '34': 'Indústria não especificados',
+                    '14': 'Lâminas de Barbear', '15': 'Lâmpadas Elétricas', '16': 'Marketing Porta-a-Porta',
+                    '17': 'Massas Alimentícias', '20': 'Peças para Autopropulsados', '21': 'Pilhas, Baterias',
+                    '22': 'Pneumáticos', '23': 'Produtos Farmacêuticos', '24': 'Rações tipo pet', '25': 'Sorvetes',
+                    '27': 'Tintas, Vernizes', '29': 'Veículos 4 rodas', '30': 'Veículos Faturamento Direto', '31': 'Veículos 2 rodas'
+                },
+                exigeReferencia: false,
+                exigeContribuinteDestinatario: true,
+                observacao: 'Configuração padrão PI'
             },
             'PR': { 
                 portalGNRE: true, 
@@ -854,20 +1107,6 @@
                 camposManuais: ['produto', 'convenio', 'numeroControle'],
                 tipoDocumentoOrigem: '22',
                 observacao: 'Configuração padrão PR'
-            },
-            'PE': { 
-                portalGNRE: true, 
-                receitas: ['100099', '100102', '100129'],
-                camposManuais: ['produto'],
-                tipoDocumentoOrigem: '22',
-                observacao: 'Configuração padrão PE'
-            },
-            'PI': { 
-                portalGNRE: true, 
-                receitas: ['100099', '100102', '100129'],
-                camposManuais: ['produto', 'convenio'],
-                tipoDocumentoOrigem: '22',
-                observacao: 'Configuração padrão PI'
             },
             'RJ': { 
                 portalGNRE: false, 
@@ -880,22 +1119,22 @@
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
                 camposManuais: ['produto'],
-                tipoDocumentoOrigem: '22',
-                observacao: 'Configuração padrão RN'
-            },
-            'RS': { 
-                portalGNRE: true, 
-                receitas: ['100099', '100102', '100129'],
-                camposManuais: ['produto', 'convenio', 'numeroControle'],
-                tipoDocumentoOrigem: '22',
-                observacao: 'Configuração padrão RS'
+                tipoDocumentoOrigem: null,
+                produtos: {},
+                exigeReferencia: true,
+                exigeContribuinteDestinatario: true,
+                exigeConvenio: true,
+                observacao: 'RN exige convênio e chave de acesso da NFe'
             },
             'RO': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
                 camposManuais: ['produto'],
-                tipoDocumentoOrigem: '22',
-                observacao: 'Configuração padrão RO'
+                tipoDocumentoOrigem: '10',
+                produtos: {},
+                exigeReferencia: true,
+                exigeContribuinteDestinatario: false,
+                observacao: 'RO exige chave de acesso da NFe'
             },
             'RR': { 
                 portalGNRE: true, 
@@ -904,12 +1143,47 @@
                 tipoDocumentoOrigem: '22',
                 observacao: 'Configuração padrão RR'
             },
+            'RS': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto', 'convenio', 'numeroControle'],
+                tipoDocumentoOrigem: '22',
+                produtos: {},
+                exigeReferencia: false,
+                exigeContribuinteDestinatario: true,
+                observacao: 'RS aceita múltiplos documentos origem'
+            },
             'SC': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
                 camposManuais: ['produto', 'convenio', 'numeroControle'],
                 tipoDocumentoOrigem: '22',
                 observacao: 'Configuração padrão SC'
+            },
+            'SE': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto'],
+                tipoDocumentoOrigem: '10',
+                produtos: {
+                    '1': 'Aguardente', '48': 'Álcool Etílico Anidro', '49': 'Álcool Etílico Hidratado',
+                    '2': 'Álcool Etílico Hidratado Combustível', '3': 'Aparelhos Celulares', '43': 'Artefatos de Uso Doméstico',
+                    '4': 'Bebidas Alcoólicas', '85': 'Bebidas hidroeletrolíticas', '81': 'Bebidas Quentes', '50': 'Biodiesel B100',
+                    '5': 'Cervejas, Chopes, Refrigerantes', '6': 'Cigarros', '7': 'Cimento', '8': 'Combustíveis e Lubrificantes',
+                    '33': 'Comércio Outros não especificados', '66': 'Derivados de petróleo', '11': 'Eletrodomésticos',
+                    '78': 'Extrato concentrados', '63': 'Gás Liquefeito de Petróleo', '62': 'Gás Natural', '51': 'Gasolina A',
+                    '52': 'Gasolina C', '53': 'Gasolina de Aviação', '84': 'ICMS Complementar', '14': 'Lâminas de Barbear',
+                    '15': 'Lâmpadas Elétricas', '64': 'Lubrificantes', '45': 'Máquinas e Aparelhos', '17': 'Massas Alimentícias',
+                    '18': 'Materiais de Construção', '69': 'Motocicletas', '60': 'Óleo Combustível', '61': 'Óleo de Xisto',
+                    '54': 'Óleo Diesel A', '55': 'Óleo Diesel B', '65': 'Outros Produtos', '20': 'Peças para Autopropulsados',
+                    '21': 'Pilhas, Baterias', '22': 'Pneumáticos', '58': 'Produtos Asfálticos', '76': 'Produtos Cerâmicos',
+                    '23': 'Produtos Farmacêuticos', '83': 'Provisionamento', '56': 'Querosene de Aviação', '57': 'Querosene Iluminante',
+                    '24': 'Rações tipo pet', '25': 'Sorvetes', '32': 'Telhas', '27': 'Tintas, Vernizes', '28': 'Trigo, Farinha',
+                    '29': 'Veículos 4 rodas', '30': 'Veículos Faturamento Direto', '31': 'Veículos 2 rodas'
+                },
+                exigeReferencia: true,
+                exigeContribuinteDestinatario: true,
+                observacao: 'SE aceita múltiplos documentos origem'
             },
             'SP': { 
                 portalGNRE: false, 
@@ -918,20 +1192,31 @@
                 tipoDocumentoOrigem: '10',
                 observacao: 'Utiliza portal próprio - SEFAZ SP'
             },
-            'SE': { 
-                portalGNRE: true, 
-                receitas: ['100099', '100102', '100129'],
-                camposManuais: ['produto'],
-                tipoDocumentoOrigem: '22',
-                observacao: 'Configuração padrão SE'
-            },
             'TO': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
                 camposManuais: ['produto', 'convenio'],
-                tipoDocumentoOrigem: '22',
+                tipoDocumentoOrigem: '10',
                 detalhamentos: { '100099': ['000003', '000004', '000005'] },
-                observacao: 'Configuração padrão TO'
+                produtos: {
+                    '79': 'Açúcar de cana', '36': 'Agricultura', '1': 'Aguardente', '48': 'Álcool Etílico Anidro',
+                    '49': 'Álcool Etílico Hidratado', '2': 'Álcool Etílico Hidratado Combustível', '3': 'Aparelhos Celulares',
+                    '4': 'Bebidas Alcoólicas', '81': 'Bebidas Quentes', '50': 'Biodiesel B100', '71': 'Café Torrado e moído',
+                    '5': 'Cervejas, Chopes, Refrigerantes', '6': 'Cigarros', '7': 'Cimento', '8': 'Combustíveis e Lubrificantes',
+                    '33': 'Comércio Outros não especificados', '38': 'Comunicação', '59': 'Coque', '9': 'Cosméticos, Perfumaria',
+                    '66': 'Derivados de petróleo', '10': 'Discos Fonográficos', '39': 'Energia Elétrica', '78': 'Extrato concentrados',
+                    '12': 'Filmes Fotográficos', '63': 'Gás Liquefeito de Petróleo', '62': 'Gás Natural', '51': 'Gasolina A',
+                    '52': 'Gasolina C', '53': 'Gasolina de Aviação', '34': 'Indústria não especificados', '14': 'Lâminas de Barbear',
+                    '15': 'Lâmpadas Elétricas', '64': 'Lubrificantes', '16': 'Marketing Porta-a-Porta', '60': 'Óleo Combustível',
+                    '61': 'Óleo de Xisto', '54': 'Óleo Diesel A', '55': 'Óleo Diesel B', '65': 'Outros Produtos',
+                    '20': 'Peças para Autopropulsados', '21': 'Pilhas, Baterias', '22': 'Pneumáticos', '58': 'Produtos Asfálticos',
+                    '23': 'Produtos Farmacêuticos', '56': 'Querosene de Aviação', '57': 'Querosene Iluminante', '24': 'Rações tipo pet',
+                    '25': 'Sorvetes', '32': 'Telhas', '27': 'Tintas, Vernizes', '37': 'Transporte', '28': 'Trigo, Farinha',
+                    '29': 'Veículos 4 rodas', '30': 'Veículos Faturamento Direto', '31': 'Veículos 2 rodas'
+                },
+                exigeReferencia: true,
+                exigeContribuinteDestinatario: true,
+                observacao: 'TO exige detalhamento para receita 100099 e observação'
             }
         };
 
@@ -1419,23 +1704,21 @@
             return /^\d{5}$/.test(codigoIBGE);
         }
 
+        // ATUALIZAÇÃO: Função validateNFeData com regras completas das UFs
         function validateNFeData(ufFavorecida, receita, valorICMSST, camposManuais = {}, nfeData = {}) {
             if (!ufFavorecida || ufFavorecida.length !== 2) {
                 return 'error';
             }
             
-            // Verificar se a UF existe nas regras
             const ufRule = ufRules[ufFavorecida];
             if (!ufRule) {
                 return 'error';
             }
             
-            // Verificar se a UF utiliza portal GNRE
             if (!ufRule.portalGNRE) {
                 return 'error';
             }
             
-            // Verificar se a receita é válida para a UF
             if (!receita) {
                 return 'error';
             }
@@ -1444,15 +1727,27 @@
                 return 'error';
             }
             
-            // Verificar se há detalhamentos obrigatórios para esta receita/UF
+            // Validar detalhamento se necessário
             if (ufRule.detalhamentos && ufRule.detalhamentos[receita] && ufRule.detalhamentos[receita].length > 0) {
                 const detalhamentoSelect = document.getElementById('detalhamento');
                 if (!detalhamentoSelect || !detalhamentoSelect.value) {
-                    return 'warning'; // Precisa de detalhamento
+                    return 'warning';
                 }
             }
             
-            // ✅ ATUALIZAÇÃO: Validação códigos IBGE dos municípios (5 dígitos)
+            // Validar produtos se necessário
+            if (ufRule.produtos && Object.keys(ufRule.produtos).length > 0) {
+                if (!camposManuais.produto || !camposManuais.produto.trim()) {
+                    return 'warning';
+                }
+                
+                // Validar se o código do produto existe na lista da UF
+                if (!ufRule.produtos[camposManuais.produto]) {
+                    return 'warning';
+                }
+            }
+            
+            // Validar códigos IBGE dos municípios
             if (nfeData.emitente && nfeData.emitente.municipio) {
                 if (!validateMunicipioIBGE(nfeData.emitente.municipio, nfeData.emitente.uf)) {
                     return 'error';
@@ -1465,11 +1760,18 @@
                 }
             }
             
-            // Validar campos manuais obrigatórios individuais
-            if (ufRule && ufRule.camposManuais) {
-                if (ufRule.camposManuais.includes('produto') && (!camposManuais.produto || !camposManuais.produto.trim())) {
-                    return 'warning'; // Precisa de produto
+            // Validar campos manuais obrigatórios
+            if (ufRule.camposManuais) {
+                for (const campo of ufRule.camposManuais) {
+                    if (!camposManuais[campo] || !camposManuais[campo].trim()) {
+                        return 'warning';
+                    }
                 }
+            }
+            
+            // Validar convênio se exigido
+            if (ufRule.exigeConvenio && (!camposManuais.convenio || !camposManuais.convenio.trim())) {
+                return 'warning';
             }
             
             if (!valorICMSST || parseFloat(valorICMSST) <= 0) {
