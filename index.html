@@ -735,14 +735,14 @@
         let nfesData = [];
         let configs = JSON.parse(localStorage.getItem('gnreConfigs')) || {};
         
-        // Regras por UF baseadas no PDF completo - AGORA EDITÁVEIS
+        // ATUALIZAÇÃO: Regras por UF baseadas no documento oficial GNRE
         let ufRules = JSON.parse(localStorage.getItem('gnreUfRules')) || {
             'AC': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
                 camposManuais: ['produto', 'convenio', 'numeroControle'],
                 tipoDocumentoOrigem: '22',
-                observacao: 'Configuração padrão AC'
+                observacao: 'Configuração padrão AC - usar código município 5 dígitos'
             },
             'AL': { 
                 portalGNRE: true, 
@@ -964,6 +964,15 @@
         const totalValorGuia = document.getElementById('totalValorGuia');
         const ufConfigGrid = document.getElementById('ufConfigGrid');
 
+        // ATUALIZAÇÃO: Função para converter código município (7 → 5 dígitos)
+        function converterCodigoMunicipio(codigoCompleto) {
+            if (!codigoCompleto || codigoCompleto.length !== 7) {
+                return codigoCompleto;
+            }
+            // Remove os 2 primeiros dígitos (código da UF) conforme documento oficial
+            return codigoCompleto.substring(2);
+        }
+
         // Inicialização
         function init() {
             // Carregar configurações salvas
@@ -1172,9 +1181,6 @@
             reader.readAsText(file);
         }
 
-        // [RESTANTE DO CÓDIGO PERMANECE EXATAMENTE IGUAL...]
-        // ... (todas as outras funções permanecem inalteradas)
-
         // Event Listeners
         uploadArea.addEventListener('click', () => xmlFilesInput.click());
         xmlFilesInput.addEventListener('change', handleFileSelect);
@@ -1276,6 +1282,7 @@
                    xmlDoc.documentElement.tagName === 'NFe';
         }
 
+        // ATUALIZAÇÃO: Função extractNFeData com código município corrigido
         function extractNFeData(xmlDoc, fileName) {
             // Encontrar a raiz da NF-e
             const nfeProc = xmlDoc.getElementsByTagName('nfeProc')[0] || xmlDoc.documentElement;
@@ -1295,13 +1302,13 @@
             const ufEmitente = getUF(emitente);
             const ufDestinatario = getUF(destinatario);
             
-            // ✅ CORREÇÃO: Extrair códigos IBGE CORRETAMENTE (7 dígitos)
+            // ✅ CORREÇÃO: Extrair códigos IBGE e converter para 5 dígitos
             const codigoIBGEEmitenteRaw = enderEmit?.getElementsByTagName('cMun')[0]?.textContent || '';
             const codigoIBGEDestinatarioRaw = enderDest?.getElementsByTagName('cMun')[0]?.textContent || '';
             
-            // GNRE espera 7 dígitos para município (código completo)
-            const codigoIBGEEmitente = codigoIBGEEmitenteRaw.padStart(7, '0').substring(0, 7);
-            const codigoIBGEDestinatario = codigoIBGEDestinatarioRaw.padStart(7, '0').substring(0, 7);
+            // ATUALIZAÇÃO: Converter para 5 dígitos conforme documento oficial
+            const codigoIBGEEmitente = converterCodigoMunicipio(codigoIBGEEmitenteRaw.padStart(7, '0').substring(0, 7));
+            const codigoIBGEDestinatario = converterCodigoMunicipio(codigoIBGEDestinatarioRaw.padStart(7, '0').substring(0, 7));
             
             // Extrair valores - Buscar ICMS ST no campo correto
             let valorTotal = '0';
@@ -1401,15 +1408,15 @@
             };
         }
 
+        // ATUALIZAÇÃO: Validação do município para 5 dígitos
         function validateMunicipioIBGE(codigoIBGE, uf) {
-            // Validar se o código IBGE tem 7 dígitos
-            if (!codigoIBGE || codigoIBGE.length !== 7) {
+            // Validar se o código IBGE tem 5 dígitos (conforme documento oficial)
+            if (!codigoIBGE || codigoIBGE.length !== 5) {
                 return false;
             }
             
-            // Validar se pertence à UF correta (primeiros 2 dígitos do código IBGE)
-            const codigoUF = codigoIBGE.substring(0, 2);
-            return ufCodes[uf] === codigoUF;
+            // Validar se é numérico
+            return /^\d{5}$/.test(codigoIBGE);
         }
 
         function validateNFeData(ufFavorecida, receita, valorICMSST, camposManuais = {}, nfeData = {}) {
@@ -1445,20 +1452,20 @@
                 }
             }
             
-            // ✅ NOVA VALIDAÇÃO: Códigos IBGE dos municípios
-            if (nfeData.emitente && nfeData.emitente.municipio && nfeData.emitente.uf) {
+            // ✅ ATUALIZAÇÃO: Validação códigos IBGE dos municípios (5 dígitos)
+            if (nfeData.emitente && nfeData.emitente.municipio) {
                 if (!validateMunicipioIBGE(nfeData.emitente.municipio, nfeData.emitente.uf)) {
                     return 'error';
                 }
             }
             
-            if (nfeData.destinatario && nfeData.destinatario.municipio && ufFavorecida) {
+            if (nfeData.destinatario && nfeData.destinatario.municipio) {
                 if (!validateMunicipioIBGE(nfeData.destinatario.municipio, ufFavorecida)) {
                     return 'error';
                 }
             }
             
-            // Validar campos manuais obrigatórios
+            // Validar campos manuais obrigatórios individuais
             if (ufRule && ufRule.camposManuais) {
                 if (ufRule.camposManuais.includes('produto') && (!camposManuais.produto || !camposManuais.produto.trim())) {
                     return 'warning'; // Precisa de produto
@@ -1763,7 +1770,7 @@
                     }
                 }
                 
-                // ✅ NOVA VALIDAÇÃO: Códigos IBGE dos municípios
+                // ✅ ATUALIZAÇÃO: Validação códigos IBGE dos municípios (5 dígitos)
                 if (nfe.emitente && nfe.emitente.municipio) {
                     if (!validateMunicipioIBGE(nfe.emitente.municipio, nfe.emitente.uf)) {
                         errors.push(`NF-e ${nfe.numero}: Código IBGE do município do emitente inválido (${nfe.emitente.municipio}) para UF ${nfe.emitente.uf}`);
@@ -1811,6 +1818,7 @@
             showAlert(message, errors.length > 0 ? 'error' : (warnings.length > 0 ? 'warning' : 'success'));
         }
 
+        // ATUALIZAÇÃO: Função generateXML com estrutura corrigida conforme documento oficial
         function generateXML() {
             if (nfesData.length === 0) {
                 showAlert('Por favor, importe pelo menos uma NF-e antes de gerar o XML.', 'error');
@@ -1831,27 +1839,31 @@
                 return;
             }
             
-            // Gerar XML no formato correto da GNRE (SEGUNDO O SITE OFICIAL)
+            // ✅ ATUALIZAÇÃO: Estrutura XML corrigida conforme documento oficial
             let xmlContent = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n`;
-            xmlContent += `<TLote_GNRE xmlns="http://www.gnre.pe.gov.br" versao="2.00">\n`;
+            xmlContent += `<TLote_GNRE versao="2.00" xmlns="http://www.gnre.pe.gov.br">\n`; // ORDEM CORRETA
             xmlContent += `  <guias>\n`;
             
             nfesData.forEach(nfe => {
                 xmlContent += `    <TDadosGNRE versao="2.00">\n`;
+                
+                // ✅ ORDEM OFICIAL DOS CAMPOS CONFORME DOCUMENTO:
                 xmlContent += `      <ufFavorecida>${nfe.ufFavorecida}</ufFavorecida>\n`;
-                xmlContent += `      <tipoGnre>0</tipoGnre>\n`;
+                xmlContent += `      <tipoGnre>0</tipoGnre>\n`; // 0 - Guia Simples
+                
+                // Contribuinte Emitente
                 xmlContent += `      <contribuinteEmitente>\n`;
                 xmlContent += `        <identificacao>\n`;
                 xmlContent += `          <CNPJ>${nfe.emitente.cnpj}</CNPJ>\n`;
                 xmlContent += `        </identificacao>\n`;
                 xmlContent += `        <razaoSocial>${escapeXML(nfe.emitente.razaoSocial)}</razaoSocial>\n`;
                 
-                // ELEMENTOS OPCIONAIS DO EMITENTE (conforme site oficial)
+                // Elementos opcionais do emitente (na ordem oficial)
                 if (nfe.emitente.endereco && nfe.emitente.endereco.trim()) {
                     xmlContent += `        <endereco>${escapeXML(nfe.emitente.endereco)}</endereco>\n`;
                 }
                 if (nfe.emitente.municipio && nfe.emitente.municipio.trim()) {
-                    xmlContent += `        <municipio>${nfe.emitente.municipio}</municipio>\n`;
+                    xmlContent += `        <municipio>${nfe.emitente.municipio}</municipio>\n`; // Já convertido para 5 dígitos
                 }
                 if (nfe.emitente.uf && nfe.emitente.uf.trim()) {
                     xmlContent += `        <uf>${nfe.emitente.uf}</uf>\n`;
@@ -1862,22 +1874,20 @@
                 if (nfe.emitente.telefone && nfe.emitente.telefone.trim()) {
                     xmlContent += `        <telefone>${nfe.emitente.telefone}</telefone>\n`;
                 }
-                
                 xmlContent += `      </contribuinteEmitente>\n`;
+                
+                // Itens GNRE
                 xmlContent += `      <itensGNRE>\n`;
                 xmlContent += `        <item>\n`;
                 xmlContent += `          <receita>${nfe.receita}</receita>\n`;
                 
-                // ✅ ORDEM CORRETA BASEADA NO SITE OFICIAL:
-                
-                // 1. Detalhamento (se aplicável) - IMEDIATAMENTE após receita
+                // Detalhamento (se aplicável)
                 const detalhamentoSelect = document.getElementById('detalhamento');
                 if (detalhamentoSelect && detalhamentoSelect.value) {
                     xmlContent += `          <detalhamentoReceita>${detalhamentoSelect.value}</detalhamentoReceita>\n`;
                 }
                 
-                // 2. Documento de Origem - SEGUNDO elemento
-                // ✅ CORREÇÃO: Tipo de documento por UF (AGORA EDITÁVEL)
+                // Documento de Origem
                 const ufRule = ufRules[nfe.ufFavorecida];
                 let tipoDocumento = ufRule?.tipoDocumentoOrigem || '10';
                 let numeroDocumento = nfe.numero;
@@ -1888,43 +1898,43 @@
                 
                 xmlContent += `          <documentoOrigem tipo="${tipoDocumento}">${numeroDocumento}</documentoOrigem>\n`;
                 
-                // 3. Produto (se aplicável) - TERCEIRO elemento
+                // Produto (se aplicável)
                 if (ufRule && ufRule.camposManuais && nfe.camposManuais) {
                     if (ufRule.camposManuais.includes('produto') && nfe.camposManuais.produto) {
                         xmlContent += `          <produto>${escapeXML(nfe.camposManuais.produto.trim())}</produto>\n`;
                     }
                 }
                 
-                // 4. Referência - QUARTO elemento
+                // Referência
                 xmlContent += `          <referencia>\n`;
-                xmlContent += `            <periodo>0</periodo>\n`;
+                xmlContent += `            <periodo>0</periodo>\n`; // 0 - Mensal
                 xmlContent += `            <mes>${nfe.periodo.mes}</mes>\n`;
                 xmlContent += `            <ano>${nfe.periodo.ano}</ano>\n`;
                 xmlContent += `          </referencia>\n`;
                 
-                // 5. Data de Vencimento - QUINTO elemento
+                // Data Vencimento
                 xmlContent += `          <dataVencimento>${nfe.dataVencimento}</dataVencimento>\n`;
                 
-                // 6. Valor - SEXTO elemento
+                // Valor Principal (ICMS ST)
                 xmlContent += `          <valor tipo="11">${parseFloat(nfe.valorICMSST).toFixed(2)}</valor>\n`;
                 
-                // 7. Convênio (se aplicável) - SÉTIMO elemento
+                // Convênio (se aplicável)
                 if (ufRule && ufRule.camposManuais && nfe.camposManuais) {
                     if (ufRule.camposManuais.includes('convenio') && nfe.camposManuais.convenio) {
                         xmlContent += `          <convenio>${escapeXML(nfe.camposManuais.convenio.trim())}</convenio>\n`;
                     }
                 }
                 
-                // 8. Contribuinte Destinatário - OITAVO elemento (DENTRO do item)
+                // Contribuinte Destinatário
                 xmlContent += `          <contribuinteDestinatario>\n`;
                 xmlContent += `            <identificacao>\n`;
                 xmlContent += `              <CNPJ>${nfe.destinatario.cnpj}</CNPJ>\n`;
                 xmlContent += `            </identificacao>\n`;
                 xmlContent += `            <razaoSocial>${escapeXML(nfe.destinatario.razaoSocial)}</razaoSocial>\n`;
-                xmlContent += `            <municipio>${nfe.destinatario.municipio}</municipio>\n`;
+                xmlContent += `            <municipio>${nfe.destinatario.municipio}</municipio>\n`; // Já convertido para 5 dígitos
                 xmlContent += `          </contribuinteDestinatario>\n`;
                 
-                // 9. Número de Controle (se aplicável) - NONO elemento
+                // Número de Controle (se aplicável)
                 if (ufRule && ufRule.camposManuais && nfe.camposManuais) {
                     if (ufRule.camposManuais.includes('numeroControle') && nfe.camposManuais.numeroControle) {
                         xmlContent += `          <numeroControle>${escapeXML(nfe.camposManuais.numeroControle.trim())}</numeroControle>\n`;
@@ -1933,6 +1943,8 @@
                 
                 xmlContent += `        </item>\n`;
                 xmlContent += `      </itensGNRE>\n`;
+                
+                // Campos finais
                 xmlContent += `      <valorGNRE>${parseFloat(nfe.valorICMSST).toFixed(2)}</valorGNRE>\n`;
                 xmlContent += `      <dataPagamento>${nfe.dataVencimento}</dataPagamento>\n`;
                 xmlContent += `    </TDadosGNRE>\n`;
