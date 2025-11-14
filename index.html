@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador Simples de Lote GNRE</title>
+    <title>Gerador Simples de Lote GNRE - Regras Atualizadas</title>
     <style>
         :root {
             --primary: #2c3e50;
@@ -360,7 +360,7 @@
             color: #2c3e50;
         }
         
-        .campo-manual-group input, .campo-manual-group select {
+        .campo-manual-group input {
             width: 100%;
             padding: 8px 10px;
             border: 1px solid #ddd;
@@ -570,7 +570,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>Gerador Simples de Lote GNRE</h1>
+            <h1>Gerador Simples de Lote GNRE - Regras Atualizadas</h1>
             <p>Arraste os XMLs das NF-e - UF Favorecida = UF do Destinatário (automático)</p>
         </header>
 
@@ -607,6 +607,14 @@
                                 <option value="600016">600016 - Taxa</option>
                             </select>
                             <div class="info-text">Selecione o código da receita conforme documento fiscal</div>
+                        </div>
+                        
+                        <div class="form-group" id="detalhamentoGroup" style="display: none;">
+                            <label for="detalhamento">Detalhamento da Receita (Global):</label>
+                            <select id="detalhamento">
+                                <option value="">-- Selecione o Detalhamento --</option>
+                            </select>
+                            <div class="info-text" id="detalhamentoInfo">Detalhamento obrigatório para UFs específicas</div>
                         </div>
                     </div>
                     
@@ -727,15 +735,15 @@
         let nfesData = [];
         let configs = JSON.parse(localStorage.getItem('gnreConfigs')) || {};
         
-        // ATUALIZAÇÃO: Regras por UF baseadas no documento oficial GNRE
+        // ATUALIZAÇÃO: Regras por UF baseadas no documento oficial GNRE (versão atualizada)
         let ufRules = JSON.parse(localStorage.getItem('gnreUfRules')) || {
             'AC': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
-                camposManuais: ['produto', 'convenio', 'numeroControle', 'detalhamentoReceita'],
-                tipoDocumentoOrigem: '10',
+                camposManuais: ['produto', 'convenio', 'numeroControle'],
+                tipoDocumentoOrigem: '22',
                 detalhamentos: {
-                    '100099': ['000004', '000021', '000036', '000037']
+                    '100099': ['000004', '000013', '000017', '000018', '000019', '000021', '000022']
                 },
                 produtos: {
                     '79': 'Açúcar de cana', '36': 'Agricultura', '1': 'Aguardente', '48': 'Álcool Etílico Anidro',
@@ -765,18 +773,26 @@
                 },
                 exigeReferencia: true,
                 exigeContribuinteDestinatario: true,
-                observacao: 'AC exige detalhamento para receita 100099'
+                camposExtras: [
+                    {"codigo": "68", "tipo": "T", "titulo": "OBS1.", "obrigatorio": false, "versao": "Todas"},
+                    {"codigo": "69", "tipo": "T", "titulo": "OBS2.", "obrigatorio": false, "versao": "Todas"},
+                    {"codigo": "76", "tipo": "T", "titulo": "Chave de Acesso da NFe", "obrigatorio": true, "versao": "Todas"}
+                ],
+                tiposDocumento: ["7", "8", "10"],
+                multiplosDocumentosOrigem: true,
+                observacao: 'AC exige detalhamento para receita 100099 e chave de acesso da NFe'
             },
             'AL': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
                 camposManuais: ['produto'],
-                tipoDocumentoOrigem: '10',
+                tipoDocumentoOrigem: '22',
                 produtos: {
                     '1': 'Aguardente', '2': 'Álcool Etílico Hidratado Combustível', '3': 'Aparelhos Celulares',
                     '47': 'Artigos de Papelaria', '4': 'Bebidas Alcoólicas', '5': 'Cervejas, Chopes, Refrigerantes',
                     '6': 'Cigarros', '7': 'Cimento', '8': 'Combustíveis e Lubrificantes', '9': 'Cosméticos, Perfumaria',
-                    '10': 'Discos Fonográficos', '11': 'Eletrodomésticos', '41': 'Ferramentas', '12': 'Filmes Fotográficos',
+                    '10': 'Discos Fonográficos', '11': 'Eletrodomésticos', '39': 'Energia Elétrica', 
+                    '87': 'Energia Elétrica - Recolhimento Consumidores Livres', '41': 'Ferramentas', '12': 'Filmes Fotográficos',
                     '13': 'Gado e Produtos', '14': 'Lâminas de Barbear', '15': 'Lâmpadas Elétricas', '45': 'Máquinas e Aparelhos',
                     '16': 'Marketing Porta-a-Porta', '17': 'Massas Alimentícias', '18': 'Materiais de Construção',
                     '19': 'Materiais de Limpeza', '46': 'Material Elétrico', '20': 'Peças para Autopropulsados',
@@ -787,13 +803,34 @@
                 },
                 exigeReferencia: false,
                 exigeContribuinteDestinatario: true,
+                camposExtras: [
+                    {"codigo": "90", "tipo": "T", "titulo": "Chave de Acesso da NFe", "obrigatorio": true, "versao": "Todas"},
+                    {"codigo": "65", "tipo": "T", "titulo": "Informação Complementar", "obrigatorio": false, "versao": "Todas"}
+                ],
+                tiposDocumento: ["1", "7", "8", "10"],
+                multiplosDocumentosOrigem: false,
                 observacao: 'Configuração padrão AL'
+            },
+            'AP': { 
+                portalGNRE: true, 
+                receitas: ['100099', '100102', '100129'],
+                camposManuais: ['produto', 'convenio'],
+                tipoDocumentoOrigem: '10',
+                produtos: {},
+                exigeReferencia: false,
+                exigeContribuinteDestinatario: true,
+                camposExtras: [
+                    {"codigo": "47", "tipo": "T", "titulo": "Chave de Acesso da NFe", "obrigatorio": true, "versao": "Todas"}
+                ],
+                tiposDocumento: ["1", "10"],
+                multiplosDocumentosOrigem: false,
+                observacao: 'AP exige chave de acesso da NFe'
             },
             'AM': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
                 camposManuais: ['produto'],
-                tipoDocumentoOrigem: '10',
+                tipoDocumentoOrigem: '22',
                 produtos: {
                     '79': 'Açúcar de cana', '36': 'Agricultura', '1': 'Aguardente', '48': 'Álcool Etílico Anidro',
                     '49': 'Álcool Etílico Hidratado', '2': 'Álcool Etílico Hidratado Combustível', '3': 'Aparelhos Celulares',
@@ -804,7 +841,7 @@
                     '73': 'Chocolates e preparações similares', '6': 'Cigarros', '7': 'Cimento', '8': 'Combustíveis e Lubrificantes',
                     '33': 'Comércio Outros não especificados', '38': 'Comunicação', '59': 'Coque', '9': 'Cosméticos, Perfumaria',
                     '66': 'Derivados de petróleo', '10': 'Discos Fonográficos', '11': 'Eletrodomésticos', '39': 'Energia Elétrica',
-                    '87': 'Energia Elétrica - Consumidores Livres', '78': 'Extrato concentrados', '41': 'Ferramentas',
+                    '87': 'Energia Elétrica - Recolhimento Consumidores Livres', '78': 'Extrato concentrados', '41': 'Ferramentas',
                     '12': 'Filmes Fotográficos', '13': 'Gado e Produtos', '63': 'Gás Liquefeito de Petróleo', '62': 'Gás Natural',
                     '51': 'Gasolina A', '52': 'Gasolina C', '53': 'Gasolina de Aviação', '84': 'ICMS Complementar',
                     '34': 'Indústria não especificados', '42': 'Instrumentos Musicais', '74': 'Iogurte', '77': 'Ladrilhos',
@@ -821,23 +858,19 @@
                     '30': 'Veículos Faturamento Direto', '31': 'Veículos 2 rodas', '88': 'Veículos e Pneumáticos'
                 },
                 exigeReferencia: true,
+                periodosReferencia: ["0", "1", "2", "3", "4", "5"],
                 exigeContribuinteDestinatario: true,
-                observacao: 'Configuração padrão AM'
-            },
-            'AP': { 
-                portalGNRE: true, 
-                receitas: ['100099', '100102', '100129'],
-                camposManuais: ['produto', 'convenio', 'detalhamentoReceita'],
-                tipoDocumentoOrigem: '10',
-                produtos: {},
-                exigeReferencia: true,
-                exigeContribuinteDestinatario: true,
-                observacao: 'AP exige chave de acesso da NFe'
+                camposExtras: [
+                    {"codigo": "13", "tipo": "T", "titulo": "Observações", "obrigatorio": false, "versao": "Todas"}
+                ],
+                tiposDocumento: ["22"],
+                multiplosDocumentosOrigem: false,
+                observacao: 'Configuração padrão AM com período de referência'
             },
             'BA': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
-                camposManuais: ['produto', 'convenio', 'numeroControle', 'detalhamentoReceita'],
+                camposManuais: ['produto', 'convenio', 'numeroControle'],
                 tipoDocumentoOrigem: '10',
                 produtos: {
                     '79': 'Açúcar de cana', '36': 'Agricultura', '1': 'Aguardente', '48': 'Álcool Etílico Anidro',
@@ -861,10 +894,13 @@
                     '23': 'Produtos Farmacêuticos', '56': 'Querosene de Aviação', '57': 'Querosene Iluminante',
                     '24': 'Rações tipo pet', '80': 'Salgados Industrializados', '25': 'Sorvetes', '26': 'Suportes Elásticos',
                     '82': 'Telecomunicações', '32': 'Telhas', '27': 'Tintas, Vernizes', '37': 'Transporte', '28': 'Trigo, Farinha',
-                    '29': 'Veículos 4 rodas', '30': 'Veículos Faturamento Direto', '31': 'Veículos 2 rodas', '88': 'Veículos e Pneumáticos'
+                    '29': 'Veículos 4 rodas', '30': 'Veículos Faturamento Direto', '31': 'Veículos 2 rodas'
                 },
                 exigeReferencia: true,
+                periodosReferencia: ["0"],
                 exigeContribuinteDestinatario: false,
+                tiposDocumento: ["10"],
+                multiplosDocumentosOrigem: false,
                 observacao: 'BA exige código de produto para ICMS ST'
             },
             'CE': { 
@@ -875,22 +911,33 @@
                 produtos: {
                     '79': 'Açúcar de cana', '36': 'Agricultura', '1': 'Aguardente', '48': 'Álcool Etílico Anidro',
                     '49': 'Álcool Etílico Hidratado', '2': 'Álcool Etílico Hidratado Combustível', '3': 'Aparelhos Celulares',
-                    '86': 'Bebidas', '4': 'Bebidas Alcoólicas', '85': 'Bebidas hidroeletrolíticas', '81': 'Bebidas Quentes',
-                    '71': 'Café Torrado e moído', '72': 'Calçados', '5': 'Cervejas, Chopes, Refrigerantes', '6': 'Cigarros',
-                    '7': 'Cimento', '8': 'Combustíveis e Lubrificantes', '66': 'Derivados de petróleo', '39': 'Energia Elétrica',
-                    '87': 'Energia Elétrica - Consumidores Livres', '78': 'Extrato concentrados', '13': 'Gado e Produtos',
-                    '63': 'Gás Liquefeito de Petróleo', '62': 'Gás Natural', '51': 'Gasolina A', '52': 'Gasolina C',
-                    '53': 'Gasolina de Aviação', '14': 'Lâminas de Barbear', '15': 'Lâmpadas Elétricas', '64': 'Lubrificantes',
+                    '70': 'Aquisição de mercadorias de forma não presencial', '43': 'Artefatos de Uso Doméstico',
+                    '47': 'Artigos de Papelaria', '4': 'Bebidas Alcoólicas', '81': 'Bebidas Quentes', '40': 'Bicicletas e Peças',
+                    '50': 'Biodiesel B100', '44': 'Brinquedos', '71': 'Café Torrado e moído', '72': 'Calçados',
+                    '5': 'Cervejas, Chopes, Refrigerantes', '73': 'Chocolates e preparações similares', '6': 'Cigarros',
+                    '7': 'Cimento', '8': 'Combustíveis e Lubrificantes', '33': 'Comércio Outros não especificados',
+                    '59': 'Coque', '9': 'Cosméticos, Perfumaria', '66': 'Derivados de petróleo', '10': 'Discos Fonográficos',
+                    '11': 'Eletrodomésticos', '39': 'Energia Elétrica', '78': 'Extrato concentrados', '41': 'Ferramentas',
+                    '12': 'Filmes Fotográficos', '13': 'Gado e Produtos', '63': 'Gás Liquefeito de Petróleo', '62': 'Gás Natural',
+                    '51': 'Gasolina A', '52': 'Gasolina C', '53': 'Gasolina de Aviação', '34': 'Indústria não especificados',
+                    '42': 'Instrumentos Musicais', '74': 'Iogurte', '77': 'Ladrilhos', '14': 'Lâminas de Barbear',
+                    '15': 'Lâmpadas Elétricas', '64': 'Lubrificantes', '75': 'Luvas Cirúrgicas', '45': 'Máquinas e Aparelhos',
                     '16': 'Marketing Porta-a-Porta', '17': 'Massas Alimentícias', '18': 'Materiais de Construção',
-                    '69': 'Motocicletas', '60': 'Óleo Combustível', '61': 'Óleo de Xisto', '54': 'Óleo Diesel A',
-                    '55': 'Óleo Diesel B', '65': 'Outros Produtos', '90': 'Peças para Veículos', '20': 'Peças para Autopropulsados',
-                    '22': 'Pneumáticos', '58': 'Produtos Asfálticos', '23': 'Produtos Farmacêuticos', '83': 'Provisionamento',
+                    '19': 'Materiais de Limpeza', '46': 'Material Elétrico', '69': 'Motocicletas', '60': 'Óleo Combustível',
+                    '61': 'Óleo de Xisto', '54': 'Óleo Diesel A', '55': 'Óleo Diesel B', '65': 'Outros Produtos',
+                    '20': 'Peças para Autopropulsados', '35': 'Pecuária', '21': 'Pilhas, Baterias', '22': 'Pneumáticos',
+                    '68': 'Produtos alimentícios', '58': 'Produtos Asfálticos', '76': 'Produtos Cerâmicos', '23': 'Produtos Farmacêuticos',
                     '56': 'Querosene de Aviação', '57': 'Querosene Iluminante', '24': 'Rações tipo pet', '80': 'Salgados Industrializados',
-                    '25': 'Sorvetes', '82': 'Telecomunicações', '32': 'Telhas', '27': 'Tintas, Vernizes', '28': 'Trigo, Farinha',
-                    '29': 'Veículos 4 rodas', '30': 'Veículos Faturamento Direto', '31': 'Veículos 2 rodas', '88': 'Veículos e Pneumáticos'
+                    '25': 'Sorvetes', '26': 'Suportes Elásticos', '32': 'Telhas', '27': 'Tintas, Vernizes', '28': 'Trigo, Farinha',
+                    '29': 'Veículos 4 rodas', '30': 'Veículos Faturamento Direto', '31': 'Veículos 2 rodas'
                 },
                 exigeReferencia: false,
                 exigeContribuinteDestinatario: true,
+                camposExtras: [
+                    {"codigo": "50", "tipo": "D", "titulo": "Data da saida da Mercadoria", "obrigatorio": false, "versao": "Todas"}
+                ],
+                tiposDocumento: ["4", "10", "25"],
+                multiplosDocumentosOrigem: false,
                 observacao: 'Configuração padrão CE'
             },
             'DF': { 
@@ -924,30 +971,15 @@
                 },
                 exigeReferencia: true,
                 exigeContribuinteDestinatario: false,
+                tiposDocumento: ["10", "13"],
+                multiplosDocumentosOrigem: false,
                 observacao: 'Configuração padrão DF'
-            },
-            'ES': { 
-                portalGNRE: false, 
-                receitas: [],
-                camposManuais: [],
-                tipoDocumentoOrigem: '10',
-                observacao: 'Utiliza portal próprio - SEFAZ ES'
-            },
-            'GO': { 
-                portalGNRE: true, 
-                receitas: ['100099', '100102', '100129'],
-                camposManuais: ['produto', 'convenio', 'numeroControle'],
-                tipoDocumentoOrigem: '10',
-                observacao: 'Configuração padrão GO'
             },
             'MA': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
-                camposManuais: ['produto', 'detalhamentoReceita'],
-                tipoDocumentoOrigem: '10',
-                detalhamentos: {
-                    '100099': ['000006', '000013', '000017', '000020', '000022', '000035']
-                },
+                camposManuais: ['produto'],
+                tipoDocumentoOrigem: '22',
                 produtos: {
                     '79': 'Açúcar de cana', '36': 'Agricultura', '1': 'Aguardente', '48': 'Álcool Etílico Anidro',
                     '49': 'Álcool Etílico Hidratado', '2': 'Álcool Etílico Hidratado Combustível', '3': 'Aparelhos Celulares',
@@ -958,7 +990,7 @@
                     '73': 'Chocolates e preparações similares', '6': 'Cigarros', '7': 'Cimento', '8': 'Combustíveis e Lubrificantes',
                     '33': 'Comércio Outros não especificados', '38': 'Comunicação', '59': 'Coque', '9': 'Cosméticos, Perfumaria',
                     '66': 'Derivados de petróleo', '10': 'Discos Fonográficos', '11': 'Eletrodomésticos', '39': 'Energia Elétrica',
-                    '87': 'Energia Elétrica - Consumidores Livres', '78': 'Extrato concentrados', '41': 'Ferramentas',
+                    '87': 'Energia Elétrica - Recolhimento Consumidores Livres', '78': 'Extrato concentrados', '41': 'Ferramentas',
                     '12': 'Filmes Fotográficos', '13': 'Gado e Produtos', '63': 'Gás Liquefeito de Petróleo', '62': 'Gás Natural',
                     '51': 'Gasolina A', '52': 'Gasolina C', '53': 'Gasolina de Aviação', '84': 'ICMS Complementar',
                     '34': 'Indústria não especificados', '42': 'Instrumentos Musicais', '74': 'Iogurte', '77': 'Ladrilhos',
@@ -976,18 +1008,27 @@
                 },
                 exigeReferencia: true,
                 exigeContribuinteDestinatario: true,
-                observacao: 'MA exige detalhamento para receita 100099'
+                camposExtras: [
+                    {"codigo": "94", "tipo": "T", "titulo": "Chave de Acesso da NFe ou do CTe/CTE-OS", "obrigatorio": true, "versao": "Todas"}
+                ],
+                tiposDocumento: ["7", "10", "25"],
+                multiplosDocumentosOrigem: true,
+                observacao: 'MA aceita múltiplos documentos origem'
             },
             'MG': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
-                camposManuais: ['produto', 'detalhamentoReceita'],
+                camposManuais: ['produto'],
                 tipoDocumentoOrigem: '10',
-                detalhamentos: { '100129': ['000051', '000052'] },
                 produtos: {},
                 exigeReferencia: true,
                 exigeContribuinteDestinatario: true,
-                observacao: 'MG usa tipo 10 para NF-e'
+                camposExtras: [
+                    {"codigo": "45", "tipo": "T", "titulo": "Informações Complementares", "obrigatorio": false, "versao": "Todas"}
+                ],
+                tiposDocumento: ["10"],
+                multiplosDocumentosOrigem: false,
+                observacao: 'MG usa tipo 10 para NF'
             },
             'MS': { 
                 portalGNRE: true, 
@@ -1019,59 +1060,66 @@
                 },
                 exigeReferencia: false,
                 exigeContribuinteDestinatario: true,
+                camposExtras: [
+                    {"codigo": "27", "tipo": "T", "titulo": "Chave de Acesso da NFe", "obrigatorio": true, "versao": "Todas"}
+                ],
+                tiposDocumento: ["10"],
+                multiplosDocumentosOrigem: false,
                 observacao: 'Configuração padrão MS'
-            },
-            'MT': { 
-                portalGNRE: true, 
-                receitas: ['100099', '100102', '100129'],
-                camposManuais: ['produto', 'convenio', 'numeroControle', 'detalhamentoReceita'],
-                tipoDocumentoOrigem: '10',
-                detalhamentos: {
-                    '100129': ['000034', '000057', '000110', '000112', '000113'],
-                    '100102': ['000055', '000109'],
-                    '100099': ['000105', '000106', '000107', '000111']
-                },
-                observacao: 'Configuração padrão MT'
             },
             'PA': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
-                camposManuais: ['produto', 'convenio', 'detalhamentoReceita'],
-                tipoDocumentoOrigem: '10',
+                camposManuais: ['produto', 'convenio'],
+                tipoDocumentoOrigem: '22',
                 produtos: {},
                 exigeReferencia: true,
                 exigeContribuinteDestinatario: true,
+                camposExtras: [
+                    {"codigo": "100", "tipo": "T", "titulo": "Chave de Acesso do CTe/CTE-OS", "obrigatorio": false, "versao": "Todas"},
+                    {"codigo": "101", "tipo": "T", "titulo": "Chave de Acesso da NFe", "obrigatorio": false, "versao": "Todas"},
+                    {"codigo": "66", "tipo": "T", "titulo": "INFORMAÇÕES COMPLEMENTARES", "obrigatorio": false, "versao": "Todas"}
+                ],
+                tiposDocumento: ["1", "10", "21"],
+                multiplosDocumentosOrigem: false,
                 observacao: 'PA exige chave da NFe como documento origem'
             },
             'PB': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
                 camposManuais: ['produto'],
-                tipoDocumentoOrigem: '10',
+                tipoDocumentoOrigem: null,
                 produtos: {},
                 exigeReferencia: true,
                 exigeContribuinteDestinatario: false,
+                camposExtras: [
+                    {"codigo": "30", "tipo": "T", "titulo": "Chave de Acesso da NFe", "obrigatorio": true, "versao": "Todas"}
+                ],
+                tiposDocumento: [],
+                multiplosDocumentosOrigem: false,
                 observacao: 'PB não exige documento de origem'
             },
             'PE': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
                 camposManuais: ['produto'],
-                tipoDocumentoOrigem: '10',
+                tipoDocumentoOrigem: '22',
                 produtos: {
-                    '1': 'Aguardente', '2': 'Álcool Etílico Hidratado Combustível', '40': 'Bicicletas e Peças',
-                    '44': 'Brinquedos', '5': 'Cervejas, Chopes, Refrigerantes', '6': 'Cigarros', '7': 'Cimento',
-                    '33': 'Comércio Outros não especificados', '9': 'Cosméticos, Perfumaria', '10': 'Discos Fonográficos',
+                    '1': 'Aguardente', '2': 'Álcool Etílico Hidratado Combustível', '4': 'Bebidas Alcoólicas',
+                    '40': 'Bicicletas e Peças', '44': 'Brinquedos', '5': 'Cervejas, Chopes, Refrigerantes', '6': 'Cigarros',
+                    '7': 'Cimento', '8': 'Combustíveis e Lubrificantes', '9': 'Cosméticos, Perfumaria', '10': 'Discos Fonográficos',
                     '11': 'Eletrodomésticos', '39': 'Energia Elétrica', '12': 'Filmes Fotográficos', '13': 'Gado e Produtos',
                     '14': 'Lâminas de Barbear', '15': 'Lâmpadas Elétricas', '16': 'Marketing Porta-a-Porta',
                     '17': 'Massas Alimentícias', '18': 'Materiais de Construção', '46': 'Material Elétrico',
                     '91': 'Mercadoria Importada Exterior', '20': 'Peças para Autopropulsados', '21': 'Pilhas, Baterias',
-                    '22': 'Pneumáticos', '23': 'Produtos Farmacêuticos', '24': 'Rações tipo pet', '26': 'Suportes Elásticos',
-                    '82': 'Telecomunicações', '27': 'Tintas, Vernizes', '28': 'Trigo, Farinha', '29': 'Veículos 4 rodas',
-                    '30': 'Veículos Faturamento Direto', '31': 'Veículos 2 rodas'
+                    '22': 'Pneumáticos', '23': 'Produtos Farmacêuticos', '24': 'Rações tipo pet', '25': 'Sorvetes',
+                    '26': 'Suportes Elásticos', '82': 'Telecomunicações', '27': 'Tintas, Vernizes', '28': 'Trigo, Farinha',
+                    '29': 'Veículos 4 rodas', '30': 'Veículos Faturamento Direto', '31': 'Veículos 2 rodas'
                 },
                 exigeReferencia: false,
                 exigeContribuinteDestinatario: true,
+                tiposDocumento: ["4", "5", "6", "18", "22", "25"],
+                multiplosDocumentosOrigem: true,
                 observacao: 'PE aceita múltiplos documentos origem'
             },
             'PI': { 
@@ -1091,103 +1139,76 @@
                 },
                 exigeReferencia: false,
                 exigeContribuinteDestinatario: true,
+                tiposDocumento: ["10"],
+                multiplosDocumentosOrigem: false,
                 observacao: 'Configuração padrão PI'
-            },
-            'PR': { 
-                portalGNRE: true, 
-                receitas: ['100099', '100102', '100129'],
-                camposManuais: ['produto', 'convenio', 'numeroControle'],
-                tipoDocumentoOrigem: '10',
-                observacao: 'Configuração padrão PR'
-            },
-            'RJ': { 
-                portalGNRE: false, 
-                receitas: [],
-                camposManuais: [],
-                tipoDocumentoOrigem: '10',
-                observacao: 'Utiliza portal próprio - SEFAZ RJ'
             },
             'RN': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
-                camposManuais: ['produto', 'detalhamentoReceita'],
-                tipoDocumentoOrigem: '10',
+                camposManuais: ['produto'],
+                tipoDocumentoOrigem: null,
                 produtos: {},
                 exigeReferencia: true,
                 exigeContribuinteDestinatario: true,
                 exigeConvenio: true,
+                camposExtras: [
+                    {"codigo": "97", "tipo": "T", "titulo": "Chave de Acesso da NFe", "obrigatorio": true, "versao": "Todas"}
+                ],
+                tiposDocumento: [],
+                multiplosDocumentosOrigem: false,
                 observacao: 'RN exige convênio e chave de acesso da NFe'
             },
             'RO': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
-                camposManuais: ['produto', 'detalhamentoReceita'],
+                camposManuais: ['produto'],
                 tipoDocumentoOrigem: '10',
                 produtos: {},
                 exigeReferencia: true,
                 exigeContribuinteDestinatario: false,
+                camposExtras: [
+                    {"codigo": "83", "tipo": "T", "titulo": "Chave de Acesso da NFe", "obrigatorio": true, "versao": "Todas"}
+                ],
+                tiposDocumento: ["10"],
+                multiplosDocumentosOrigem: true,
                 observacao: 'RO exige chave de acesso da NFe'
-            },
-            'RR': { 
-                portalGNRE: true, 
-                receitas: ['100099', '100102', '100129'],
-                camposManuais: ['produto', 'convenio'],
-                tipoDocumentoOrigem: '10',
-                observacao: 'Configuração padrão RR'
             },
             'RS': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
                 camposManuais: ['produto', 'convenio', 'numeroControle'],
-                tipoDocumentoOrigem: '10',
+                tipoDocumentoOrigem: '22',
                 produtos: {},
                 exigeReferencia: false,
                 exigeContribuinteDestinatario: true,
+                camposExtras: [
+                    {"codigo": "62", "tipo": "T", "titulo": "Informações Complementares 1", "obrigatorio": false, "versao": "Todas"}
+                ],
+                tiposDocumento: ["22", "23", "24"],
+                multiplosDocumentosOrigem: true,
                 observacao: 'RS aceita múltiplos documentos origem'
-            },
-            'SC': { 
-                portalGNRE: true, 
-                receitas: ['100099', '100102', '100129'],
-                camposManuais: ['produto', 'convenio', 'numeroControle'],
-                tipoDocumentoOrigem: '10',
-                observacao: 'Configuração padrão SC'
             },
             'SE': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
                 camposManuais: ['produto'],
                 tipoDocumentoOrigem: '10',
-                produtos: {
-                    '1': 'Aguardente', '48': 'Álcool Etílico Anidro', '49': 'Álcool Etílico Hidratado',
-                    '2': 'Álcool Etílico Hidratado Combustível', '3': 'Aparelhos Celulares', '43': 'Artefatos de Uso Doméstico',
-                    '4': 'Bebidas Alcoólicas', '85': 'Bebidas hidroeletrolíticas', '81': 'Bebidas Quentes', '50': 'Biodiesel B100',
-                    '5': 'Cervejas, Chopes, Refrigerantes', '6': 'Cigarros', '7': 'Cimento', '8': 'Combustíveis e Lubrificantes',
-                    '33': 'Comércio Outros não especificados', '66': 'Derivados de petróleo', '11': 'Eletrodomésticos',
-                    '78': 'Extrato concentrados', '63': 'Gás Liquefeito de Petróleo', '62': 'Gás Natural', '51': 'Gasolina A',
-                    '52': 'Gasolina C', '53': 'Gasolina de Aviação', '84': 'ICMS Complementar', '14': 'Lâminas de Barbear',
-                    '15': 'Lâmpadas Elétricas', '64': 'Lubrificantes', '45': 'Máquinas e Aparelhos', '17': 'Massas Alimentícias',
-                    '18': 'Materiais de Construção', '69': 'Motocicletas', '60': 'Óleo Combustível', '61': 'Óleo de Xisto',
-                    '54': 'Óleo Diesel A', '55': 'Óleo Diesel B', '65': 'Outros Produtos', '20': 'Peças para Autopropulsados',
-                    '21': 'Pilhas, Baterias', '22': 'Pneumáticos', '58': 'Produtos Asfálticos', '76': 'Produtos Cerâmicos',
-                    '23': 'Produtos Farmacêuticos', '83': 'Provisionamento', '56': 'Querosene de Aviação', '57': 'Querosene Iluminante',
-                    '24': 'Rações tipo pet', '25': 'Sorvetes', '32': 'Telhas', '27': 'Tintas, Vernizes', '28': 'Trigo, Farinha',
-                    '29': 'Veículos 4 rodas', '30': 'Veículos Faturamento Direto', '31': 'Veículos 2 rodas'
-                },
+                produtos: {},
                 exigeReferencia: true,
                 exigeContribuinteDestinatario: true,
+                camposExtras: [
+                    {"codigo": "77", "tipo": "T", "titulo": "Chave de Acesso da NFe ou do CTe/CTE-OS", "obrigatorio": true, "versao": "Todas"},
+                    {"codigo": "73", "tipo": "T", "titulo": "Informações Complementares", "obrigatorio": false, "versao": "Todas"}
+                ],
+                tiposDocumento: ["10"],
+                multiplosDocumentosOrigem: true,
                 observacao: 'SE aceita múltiplos documentos origem'
-            },
-            'SP': { 
-                portalGNRE: false, 
-                receitas: [],
-                camposManuais: [],
-                tipoDocumentoOrigem: '10',
-                observacao: 'Utiliza portal próprio - SEFAZ SP'
             },
             'TO': { 
                 portalGNRE: true, 
                 receitas: ['100099', '100102', '100129'],
-                camposManuais: ['produto', 'convenio', 'detalhamentoReceita'],
+                camposManuais: ['produto', 'convenio'],
                 tipoDocumentoOrigem: '10',
                 detalhamentos: { '100099': ['000003', '000004', '000005'] },
                 produtos: {
@@ -1208,6 +1229,11 @@
                 },
                 exigeReferencia: true,
                 exigeContribuinteDestinatario: true,
+                camposExtras: [
+                    {"codigo": "80", "tipo": "T", "titulo": "Chave de Acesso da NFe", "obrigatorio": true, "versao": "2.00"}
+                ],
+                tiposDocumento: ["10"],
+                multiplosDocumentosOrigem: false,
                 observacao: 'TO exige detalhamento para receita 100099 e observação'
             }
         };
@@ -1241,13 +1267,33 @@
         const totalValorGuia = document.getElementById('totalValorGuia');
         const ufConfigGrid = document.getElementById('ufConfigGrid');
 
-        // ATUALIZAÇÃO: Função para converter código município (7 → 5 dígitos)
+        // ✅ CONVERSÃO OFICIAL 7 → 5 dígitos conforme documento GNRE
         function converterCodigoMunicipio(codigoCompleto) {
             if (!codigoCompleto || codigoCompleto.length !== 7) {
+                console.warn('Código município inválido:', codigoCompleto);
                 return codigoCompleto;
             }
-            // Remove os 2 primeiros dígitos (código da UF) conforme documento oficial
+            // Remove os 2 primeiros dígitos (código UF) conforme documento oficial
             return codigoCompleto.substring(2);
+        }
+
+        // ✅ VALIDAÇÃO CONFORME REGRAS OFICIAIS
+        function validateMunicipioIBGE(codigoIBGE, uf) {
+            if (!codigoIBGE || codigoIBGE.length !== 5) {
+                return false;
+            }
+            return /^\d{5}$/.test(codigoIBGE);
+        }
+
+        // ✅ ESCAPE CONFORME TABELA OFICIAL GNRE
+        function escapeXML(text) {
+            if (!text) return '';
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
         }
 
         // Inicialização
@@ -1259,6 +1305,16 @@
             
             updateGuiasTable();
             renderUfConfigs();
+            
+            // Atualizar detalhamentos quando a receita mudar
+            receitaSelect.addEventListener('change', function() {
+                // Para cada NFe, atualizar detalhamentos baseado na UF favorecida
+                nfesData.forEach(nfe => {
+                    if (nfe.ufFavorecida) {
+                        updateDetalhamentoOptions(nfe.ufFavorecida, this.value);
+                    }
+                });
+            });
         }
 
         // Sistema de Abas
@@ -1299,8 +1355,9 @@
                     <div class="form-group">
                         <label>Tipo Documento Origem (NF-e):</label>
                         <select onchange="updateUfRule('${uf}', 'tipoDocumentoOrigem', this.value)">
-                            <option value="10" ${rule.tipoDocumentoOrigem === '10' ? 'selected' : ''}>10 - Número da Nota Fiscal</option>
+                            <option value="10" ${rule.tipoDocumentoOrigem === '10' ? 'selected' : ''}>10 - Numérico Simples</option>
                             <option value="22" ${rule.tipoDocumentoOrigem === '22' ? 'selected' : ''}>22 - Chave NF-e (44 dígitos)</option>
+                            <option value="55" ${rule.tipoDocumentoOrigem === '55' ? 'selected' : ''}>55 - NF-e Específico</option>
                         </select>
                     </div>
                     
@@ -1326,10 +1383,6 @@
                             <label style="display: flex; align-items: center; font-size: 12px;">
                                 <input type="checkbox" ${rule.camposManuais.includes('numeroControle') ? 'checked' : ''} 
                                        onchange="toggleCampoManual('${uf}', 'numeroControle', this.checked)"> Controle
-                            </label>
-                            <label style="display: flex; align-items: center; font-size: 12px;">
-                                <input type="checkbox" ${rule.camposManuais.includes('detalhamentoReceita') ? 'checked' : ''} 
-                                       onchange="toggleCampoManual('${uf}', 'detalhamentoReceita', this.checked)"> Detalhamento
                             </label>
                         </div>
                     </div>
@@ -1524,6 +1577,11 @@
                         updateFileList();
                         updateGuiasTable();
                         
+                        // ATUALIZAR INFORMAÇÕES DA UF AUTOMATICAMENTE
+                        if (nfeData.ufFavorecida) {
+                            updateDetalhamentoOptions(nfeData.ufFavorecida, receitaSelect.value);
+                        }
+                        
                         showAlert(`NF-e ${nfeData.numero} processada com sucesso!`, 'success');
                     } else {
                         showAlert(`O arquivo ${file.name} não é uma NF-e válida.`, 'error');
@@ -1547,7 +1605,7 @@
                    xmlDoc.documentElement.tagName === 'NFe';
         }
 
-        // ATUALIZAÇÃO: Função extractNFeData com código município corrigido e tipo documento correto
+        // ✅ FUNÇÃO EXTRACT NF-E DATA COM CONVERSÃO OFICIAL
         function extractNFeData(xmlDoc, fileName) {
             // Encontrar a raiz da NF-e
             const nfeProc = xmlDoc.getElementsByTagName('nfeProc')[0] || xmlDoc.documentElement;
@@ -1567,13 +1625,12 @@
             const ufEmitente = getUF(emitente);
             const ufDestinatario = getUF(destinatario);
             
-            // ✅ CORREÇÃO: Extrair códigos IBGE e converter para 5 dígitos
+            // ✅ CONVERSÃO OFICIAL DOS CÓDIGOS MUNICÍPIO (7 → 5 dígitos)
             const codigoIBGEEmitenteRaw = enderEmit?.getElementsByTagName('cMun')[0]?.textContent || '';
             const codigoIBGEDestinatarioRaw = enderDest?.getElementsByTagName('cMun')[0]?.textContent || '';
             
-            // ATUALIZAÇÃO: Converter para 5 dígitos conforme documento oficial
-            const codigoIBGEEmitente = converterCodigoMunicipio(codigoIBGEEmitenteRaw.padStart(7, '0').substring(0, 7));
-            const codigoIBGEDestinatario = converterCodigoMunicipio(codigoIBGEDestinatarioRaw.padStart(7, '0').substring(0, 7));
+            const codigoIBGEEmitente = converterCodigoMunicipio(codigoIBGEEmitenteRaw.padStart(7, '0'));
+            const codigoIBGEDestinatario = converterCodigoMunicipio(codigoIBGEDestinatarioRaw.padStart(7, '0'));
             
             // Extrair valores - Buscar ICMS ST no campo correto
             let valorTotal = '0';
@@ -1595,26 +1652,13 @@
                 chave = chave.replace('NFe', '');
             }
             
-            // ✅ CORREÇÃO: Extrair número da nota fiscal corretamente (tipo 10)
+            // Extrair número da NF-e (últimos 9 dígitos da chave)
             let numero = '';
-            const nNFElement = ide?.getElementsByTagName('nNF')[0];
-            if (nNFElement && nNFElement.textContent) {
-                numero = nNFElement.textContent.padStart(9, '0'); // Garantir 9 dígitos
-            } else if (chave && chave.length >= 9) {
-                // Fallback: últimos 9 dígitos da chave
+            if (chave && chave.length >= 9) {
                 numero = chave.substring(chave.length - 9);
             } else {
-                numero = fileName.replace(/\D/g, '').slice(-9); // Extrair números do nome do arquivo
-            }
-            
-            // ✅ CORREÇÃO: Definir tipo de documento baseado na UF - PADRÃO É 10 (NÚMERO)
-            const ufRule = ufRules[ufDestinatario];
-            let tipoDocumentoOrigem = ufRule?.tipoDocumentoOrigem || '10'; // Padrão é 10 (número)
-            
-            // Se a UF exige chave (tipo 22), usar chave completa
-            let documentoOrigem = numero;
-            if (tipoDocumentoOrigem === '22' && chave && chave.length === 44) {
-                documentoOrigem = chave;
+                // Tentar extrair do elemento nNF
+                numero = ide?.getElementsByTagName('nNF')[0]?.textContent || chave || fileName;
             }
             
             // Configurações
@@ -1629,6 +1673,10 @@
             const now = new Date();
             const mes = String(now.getMonth() + 1).padStart(2, '0');
             const ano = now.getFullYear();
+            
+            // ✅ TIPO DOCUMENTO ORIGEM conforme regras da UF
+            const ufRule = ufRules[ufDestinatario];
+            const tipoDocumentoOrigem = ufRule?.tipoDocumentoOrigem || '10';
             
             // Validar dados críticos INCLUINDO municípios
             const status = validateNFeData(ufDestinatario, receita, valorICMSST, {}, {
@@ -1652,7 +1700,7 @@
                 valorPrincipal: valorICMSST,
                 valorTotal: valorTotal,
                 valorICMSST: valorICMSST,
-                documentoOrigem: documentoOrigem,
+                documentoOrigem: chave || fileName,
                 tipoDocumentoOrigem: tipoDocumentoOrigem,
                 periodo: {
                     mes: mes,
@@ -1686,18 +1734,7 @@
             };
         }
 
-        // ATUALIZAÇÃO: Validação do município para 5 dígitos
-        function validateMunicipioIBGE(codigoIBGE, uf) {
-            // Validar se o código IBGE tem 5 dígitos (conforme documento oficial)
-            if (!codigoIBGE || codigoIBGE.length !== 5) {
-                return false;
-            }
-            
-            // Validar se é numérico
-            return /^\d{5}$/.test(codigoIBGE);
-        }
-
-        // ATUALIZAÇÃO: Função validateNFeData com regras completas das UFs
+        // ✅ VALIDAÇÃO ESTRITA CONFORME DOCUMENTO OFICIAL
         function validateNFeData(ufFavorecida, receita, valorICMSST, camposManuais = {}, nfeData = {}) {
             if (!ufFavorecida || ufFavorecida.length !== 2) {
                 return 'error';
@@ -1720,6 +1757,14 @@
                 return 'error';
             }
             
+            // Validar detalhamento se necessário
+            if (ufRule.detalhamentos && ufRule.detalhamentos[receita] && ufRule.detalhamentos[receita].length > 0) {
+                const detalhamentoSelect = document.getElementById('detalhamento');
+                if (!detalhamentoSelect || !detalhamentoSelect.value) {
+                    return 'warning';
+                }
+            }
+            
             // Validar produtos se necessário
             if (ufRule.produtos && Object.keys(ufRule.produtos).length > 0) {
                 if (!camposManuais.produto || !camposManuais.produto.trim()) {
@@ -1732,7 +1777,7 @@
                 }
             }
             
-            // Validar códigos IBGE dos municípios
+            // ✅ VALIDAÇÃO CÓDIGOS IBGE DOS MUNICÍPIOS (5 dígitos)
             if (nfeData.emitente && nfeData.emitente.municipio) {
                 if (!validateMunicipioIBGE(nfeData.emitente.municipio, nfeData.emitente.uf)) {
                     return 'error';
@@ -1746,7 +1791,7 @@
             }
             
             // Validar campos manuais obrigatórios
-            if (ufRule && ufRule.camposManuais) {
+            if (ufRule.camposManuais) {
                 for (const campo of ufRule.camposManuais) {
                     if (!camposManuais[campo] || !camposManuais[campo].trim()) {
                         return 'warning';
@@ -1790,6 +1835,32 @@
                 '28': 'SE', '17': 'TO'
             };
             return ufs[codigo] || codigo;
+        }
+
+        // Função para atualizar opções de detalhamento baseado na UF e receita
+        function updateDetalhamentoOptions(uf, receita) {
+            const detalhamentoGroup = document.getElementById('detalhamentoGroup');
+            const detalhamentoSelect = document.getElementById('detalhamento');
+            const detalhamentoInfo = document.getElementById('detalhamentoInfo');
+            
+            // Limpar opções atuais
+            detalhamentoSelect.innerHTML = '<option value="">-- Selecione o Detalhamento --</option>';
+            
+            const ufRule = ufRules[uf];
+            if (ufRule && ufRule.detalhamentos && ufRule.detalhamentos[receita] && ufRule.detalhamentos[receita].length > 0) {
+                detalhamentoGroup.style.display = 'block';
+                
+                ufRule.detalhamentos[receita].forEach(codigo => {
+                    const option = document.createElement('option');
+                    option.value = codigo;
+                    option.textContent = `${codigo} - Detalhamento ${codigo}`;
+                    detalhamentoSelect.appendChild(option);
+                });
+                
+                detalhamentoInfo.textContent = `Detalhamento obrigatório para ${uf} - Receita ${receita}`;
+            } else {
+                detalhamentoGroup.style.display = 'none';
+            }
         }
 
         function updateFileList() {
@@ -1890,43 +1961,6 @@
                     const expandRow = document.createElement('tr');
                     expandRow.id = `camposManuaisRow-${index}`;
                     expandRow.className = 'campos-manuais-row hidden';
-                    
-                    // ✅ CORREÇÃO: Renderizar select de produtos quando disponível
-                    const produtosHTML = ufRule.produtos && Object.keys(ufRule.produtos).length > 0 ? 
-                        `<select id="produto-${index}" 
-                                onchange="updateCampoManual(${index}, 'produto', this.value)"
-                                style="width: 100%; padding: 8px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px;">
-                            <option value="">-- Selecione o Produto --</option>
-                            ${Object.entries(ufRule.produtos).map(([codigo, descricao]) => 
-                                `<option value="${codigo}" ${nfe.camposManuais?.produto === codigo ? 'selected' : ''}>
-                                    ${codigo} - ${descricao}
-                                </option>`
-                            ).join('')}
-                        </select>` :
-                        `<input type="text" 
-                               id="produto-${index}" 
-                               value="${nfe.camposManuais?.produto || ''}"
-                               onchange="updateCampoManual(${index}, 'produto', this.value)"
-                               placeholder="Ex: 0101010">`;
-                    
-                    // ✅ CORREÇÃO: Renderizar select de detalhamentos quando disponível
-                    const detalhamentosHTML = ufRule.detalhamentos && ufRule.detalhamentos[nfe.receita] ? 
-                        `<select id="detalhamento-${index}" 
-                                onchange="updateCampoManual(${index}, 'detalhamentoReceita', this.value)"
-                                style="width: 100%; padding: 8px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px;">
-                            <option value="">-- Selecione o Detalhamento --</option>
-                            ${ufRule.detalhamentos[nfe.receita].map(codigo => 
-                                `<option value="${codigo}" ${nfe.camposManuais?.detalhamentoReceita === codigo ? 'selected' : ''}>
-                                    ${codigo} - Detalhamento ${codigo}
-                                </option>`
-                            ).join('')}
-                        </select>` :
-                        `<input type="text" 
-                               id="detalhamento-${index}" 
-                               value="${nfe.camposManuais?.detalhamentoReceita || ''}"
-                               onchange="updateCampoManual(${index}, 'detalhamentoReceita', this.value)"
-                               placeholder="Ex: 000001">`;
-                    
                     expandRow.innerHTML = `
                         <td colspan="8" style="background: #f8f9fa; padding: 20px;">
                             <div class="campos-manuais-content">
@@ -1938,12 +1972,12 @@
                                         ${ufRule.camposManuais.includes('produto') ? `
                                         <div class="campo-manual-group">
                                             <label for="produto-${index}">Código do Produto:</label>
-                                            ${produtosHTML}
-                                            <div class="campo-manual-info">
-                                                ${Object.keys(ufRule.produtos).length > 0 ? 
-                                                  'Selecione o produto conforme tabela da UF' : 
-                                                  'Informe o código do produto conforme tabela da UF'}
-                                            </div>
+                                            <input type="text" 
+                                                   id="produto-${index}" 
+                                                   value="${nfe.camposManuais?.produto || ''}"
+                                                   onchange="updateCampoManual(${index}, 'produto', this.value)"
+                                                   placeholder="Ex: 0101010">
+                                            <div class="campo-manual-info">Código do produto conforme tabela da UF</div>
                                         </div>
                                         ` : ''}
                                         
@@ -1968,18 +2002,6 @@
                                                    onchange="updateCampoManual(${index}, 'numeroControle', this.value)"
                                                    placeholder="Ex: CONTROLE123">
                                             <div class="campo-manual-info">Número de controle interno</div>
-                                        </div>
-                                        ` : ''}
-                                        
-                                        ${ufRule.camposManuais.includes('detalhamentoReceita') ? `
-                                        <div class="campo-manual-group">
-                                            <label for="detalhamento-${index}">Detalhamento da Receita:</label>
-                                            ${detalhamentosHTML}
-                                            <div class="campo-manual-info">
-                                                ${ufRule.detalhamentos && ufRule.detalhamentos[nfe.receita] ? 
-                                                  'Selecione o detalhamento conforme tabela da UF' : 
-                                                  'Informe o código do detalhamento conforme tabela da UF'}
-                                            </div>
                                         </div>
                                         ` : ''}
                                     </div>
@@ -2072,7 +2094,15 @@
                     errors.push(`NF-e ${nfe.numero}: Receita ${nfe.receita} não habilitada para ${nfe.ufFavorecida}`);
                 }
                 
-                // ✅ ATUALIZAÇÃO: Validação códigos IBGE dos municípios (5 dígitos)
+                // Validar detalhamento se necessário
+                if (ufRule && ufRule.detalhamentos && ufRule.detalhamentos[nfe.receita] && ufRule.detalhamentos[nfe.receita].length > 0) {
+                    const detalhamentoSelect = document.getElementById('detalhamento');
+                    if (!detalhamentoSelect || !detalhamentoSelect.value) {
+                        errors.push(`NF-e ${nfe.numero}: Detalhamento da receita obrigatório para ${nfe.ufFavorecida}`);
+                    }
+                }
+                
+                // ✅ VALIDAÇÃO CÓDIGOS IBGE DOS MUNICÍPIOS (5 dígitos)
                 if (nfe.emitente && nfe.emitente.municipio) {
                     if (!validateMunicipioIBGE(nfe.emitente.municipio, nfe.emitente.uf)) {
                         errors.push(`NF-e ${nfe.numero}: Código IBGE do município do emitente inválido (${nfe.emitente.municipio}) para UF ${nfe.emitente.uf}`);
@@ -2093,10 +2123,6 @@
                     
                     if (ufRule.camposManuais.includes('convenio') && (!nfe.camposManuais?.convenio || !nfe.camposManuais.convenio.trim())) {
                         warnings.push(`NF-e ${nfe.numero}: Número do convênio recomendado para ${nfe.ufFavorecida} - clique no ícone 📝 para preencher`);
-                    }
-                    
-                    if (ufRule.camposManuais.includes('detalhamentoReceita') && (!nfe.camposManuais?.detalhamentoReceita || !nfe.camposManuais.detalhamentoReceita.trim())) {
-                        warnings.push(`NF-e ${nfe.numero}: Detalhamento da receita obrigatório para ${nfe.ufFavorecida} - clique no ícone 📝 para preencher`);
                     }
                 }
                 
@@ -2124,7 +2150,7 @@
             showAlert(message, errors.length > 0 ? 'error' : (warnings.length > 0 ? 'warning' : 'success'));
         }
 
-        // ATUALIZAÇÃO: Função generateXML com estrutura corrigida conforme documento oficial
+        // ✅ FUNÇÃO GENERATE XML CORRIGIDA COM ORDEM OFICIAL
         function generateXML() {
             if (nfesData.length === 0) {
                 showAlert('Por favor, importe pelo menos uma NF-e antes de gerar o XML.', 'error');
@@ -2145,31 +2171,31 @@
                 return;
             }
             
-            // ✅ ATUALIZAÇÃO: Estrutura XML corrigida conforme documento oficial
+            // ✅ ESTRUTURA XML CORRIGIDA CONFORME DOCUMENTO OFICIAL
             let xmlContent = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n`;
-            xmlContent += `<TLote_GNRE versao="2.00" xmlns="http://www.gnre.pe.gov.br">\n`; // ORDEM CORRETA
+            xmlContent += `<TLote_GNRE versao="2.00" xmlns="http://www.gnre.pe.gov.br">\n`;
             xmlContent += `  <guias>\n`;
             
             nfesData.forEach(nfe => {
                 xmlContent += `    <TDadosGNRE versao="2.00">\n`;
                 
-                // ✅ ORDEM OFICIAL DOS CAMPOS CONFORME DOCUMENTO:
+                // ✅ ORDEM OFICIAL EXATA DOS CAMPOS
                 xmlContent += `      <ufFavorecida>${nfe.ufFavorecida}</ufFavorecida>\n`;
                 xmlContent += `      <tipoGnre>0</tipoGnre>\n`; // 0 - Guia Simples
                 
-                // Contribuinte Emitente
+                // Contribuinte Emitente (na ordem oficial)
                 xmlContent += `      <contribuinteEmitente>\n`;
                 xmlContent += `        <identificacao>\n`;
                 xmlContent += `          <CNPJ>${nfe.emitente.cnpj}</CNPJ>\n`;
                 xmlContent += `        </identificacao>\n`;
                 xmlContent += `        <razaoSocial>${escapeXML(nfe.emitente.razaoSocial)}</razaoSocial>\n`;
                 
-                // Elementos opcionais do emitente (na ordem oficial)
+                // ✅ ELEMENTOS NA ORDEM EXATA DO DOCUMENTO
                 if (nfe.emitente.endereco && nfe.emitente.endereco.trim()) {
                     xmlContent += `        <endereco>${escapeXML(nfe.emitente.endereco)}</endereco>\n`;
                 }
                 if (nfe.emitente.municipio && nfe.emitente.municipio.trim()) {
-                    xmlContent += `        <municipio>${nfe.emitente.municipio}</municipio>\n`; // Já convertido para 5 dígitos
+                    xmlContent += `        <municipio>${nfe.emitente.municipio}</municipio>\n`;
                 }
                 if (nfe.emitente.uf && nfe.emitente.uf.trim()) {
                     xmlContent += `        <uf>${nfe.emitente.uf}</uf>\n`;
@@ -2185,32 +2211,29 @@
                 // Itens GNRE
                 xmlContent += `      <itensGNRE>\n`;
                 xmlContent += `        <item>\n`;
+                
+                // ✅ ORDEM INTERNA DO ITEM conforme documento
                 xmlContent += `          <receita>${nfe.receita}</receita>\n`;
                 
-                // ✅ CORREÇÃO: Detalhamento (se aplicável) - AGORA POR UF ESPECÍFICA
-                const ufRule = ufRules[nfe.ufFavorecida];
-                if (ufRule && ufRule.camposManuais && nfe.camposManuais) {
-                    if (ufRule.camposManuais.includes('detalhamentoReceita') && nfe.camposManuais.detalhamentoReceita) {
-                        xmlContent += `          <detalhamentoReceita>${nfe.camposManuais.detalhamentoReceita.trim()}</detalhamentoReceita>\n`;
-                    }
+                // Detalhamento (se aplicável)
+                const detalhamentoSelect = document.getElementById('detalhamento');
+                if (detalhamentoSelect && detalhamentoSelect.value) {
+                    xmlContent += `          <detalhamentoReceita>${detalhamentoSelect.value}</detalhamentoReceita>\n`;
                 }
                 
-                // ✅ CORREÇÃO: Documento de Origem - usar tipo correto (10 para número)
-                const tipoDocumento = nfe.tipoDocumentoOrigem; // Já definido na extração
-                const numeroDocumento = nfe.documentoOrigem; // Já definido na extração
+                // Documento Origem
+                const ufRule = ufRules[nfe.ufFavorecida];
+                let tipoDocumento = ufRule?.tipoDocumentoOrigem || '10';
+                xmlContent += `          <documentoOrigem tipo="${tipoDocumento}">${nfe.documentoOrigem}</documentoOrigem>\n`;
                 
-                xmlContent += `          <documentoOrigem tipo="${tipoDocumento}">${numeroDocumento}</documentoOrigem>\n`;
-                
-                // ✅ CORREÇÃO: Produto (se aplicável)
-                if (ufRule && ufRule.camposManuais && nfe.camposManuais) {
-                    if (ufRule.camposManuais.includes('produto') && nfe.camposManuais.produto) {
-                        xmlContent += `          <produto>${escapeXML(nfe.camposManuais.produto.trim())}</produto>\n`;
-                    }
+                // Produto
+                if (nfe.camposManuais?.produto) {
+                    xmlContent += `          <produto>${escapeXML(nfe.camposManuais.produto.trim())}</produto>\n`;
                 }
                 
                 // Referência
                 xmlContent += `          <referencia>\n`;
-                xmlContent += `            <periodo>0</periodo>\n`; // 0 - Mensal
+                xmlContent += `            <periodo>0</periodo>\n`;
                 xmlContent += `            <mes>${nfe.periodo.mes}</mes>\n`;
                 xmlContent += `            <ano>${nfe.periodo.ano}</ano>\n`;
                 xmlContent += `          </referencia>\n`;
@@ -2218,14 +2241,12 @@
                 // Data Vencimento
                 xmlContent += `          <dataVencimento>${nfe.dataVencimento}</dataVencimento>\n`;
                 
-                // Valor Principal (ICMS ST)
+                // Valor Principal
                 xmlContent += `          <valor tipo="11">${parseFloat(nfe.valorICMSST).toFixed(2)}</valor>\n`;
                 
-                // Convênio (se aplicável)
-                if (ufRule && ufRule.camposManuais && nfe.camposManuais) {
-                    if (ufRule.camposManuais.includes('convenio') && nfe.camposManuais.convenio) {
-                        xmlContent += `          <convenio>${escapeXML(nfe.camposManuais.convenio.trim())}</convenio>\n`;
-                    }
+                // Convênio
+                if (nfe.camposManuais?.convenio) {
+                    xmlContent += `          <convenio>${escapeXML(nfe.camposManuais.convenio.trim())}</convenio>\n`;
                 }
                 
                 // Contribuinte Destinatário
@@ -2234,22 +2255,21 @@
                 xmlContent += `              <CNPJ>${nfe.destinatario.cnpj}</CNPJ>\n`;
                 xmlContent += `            </identificacao>\n`;
                 xmlContent += `            <razaoSocial>${escapeXML(nfe.destinatario.razaoSocial)}</razaoSocial>\n`;
-                xmlContent += `            <municipio>${nfe.destinatario.municipio}</municipio>\n`; // Já convertido para 5 dígitos
+                xmlContent += `            <municipio>${nfe.destinatario.municipio}</municipio>\n`;
                 xmlContent += `          </contribuinteDestinatario>\n`;
                 
-                // Número de Controle (se aplicável)
-                if (ufRule && ufRule.camposManuais && nfe.camposManuais) {
-                    if (ufRule.camposManuais.includes('numeroControle') && nfe.camposManuais.numeroControle) {
-                        xmlContent += `          <numeroControle>${escapeXML(nfe.camposManuais.numeroControle.trim())}</numeroControle>\n`;
-                    }
+                // Número de Controle
+                if (nfe.camposManuais?.numeroControle) {
+                    xmlContent += `          <numeroControle>${escapeXML(nfe.camposManuais.numeroControle.trim())}</numeroControle>\n`;
                 }
                 
                 xmlContent += `        </item>\n`;
                 xmlContent += `      </itensGNRE>\n`;
                 
-                // Campos finais
+                // ✅ CAMPOS FINAIS na ordem correta
                 xmlContent += `      <valorGNRE>${parseFloat(nfe.valorICMSST).toFixed(2)}</valorGNRE>\n`;
                 xmlContent += `      <dataPagamento>${nfe.dataVencimento}</dataPagamento>\n`;
+                
                 xmlContent += `    </TDadosGNRE>\n`;
             });
             
@@ -2268,16 +2288,6 @@
             resultSection.scrollIntoView({ behavior: 'smooth' });
             
             showAlert('XML gerado com sucesso! Clique em "Baixar Arquivo XML" para salvar.', 'success');
-        }
-
-        function escapeXML(text) {
-            if (!text) return '';
-            return text
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
         }
 
         function downloadXML() {
@@ -2328,33 +2338,33 @@
         // Função auxiliar para obter regras padrão
         function getDefaultUfRules() {
             return {
-                'AC': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'numeroControle', 'detalhamentoReceita'], tipoDocumentoOrigem: '10' },
-                'AL': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '10' },
-                'AP': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'detalhamentoReceita'], tipoDocumentoOrigem: '10' },
-                'AM': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '10' },
-                'BA': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'numeroControle', 'detalhamentoReceita'], tipoDocumentoOrigem: '10' },
-                'CE': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio'], tipoDocumentoOrigem: '10' },
-                'DF': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '10' },
+                'AC': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'numeroControle'], tipoDocumentoOrigem: '22' },
+                'AL': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '22' },
+                'AP': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio'], tipoDocumentoOrigem: '22' },
+                'AM': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '22' },
+                'BA': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'numeroControle'], tipoDocumentoOrigem: '22' },
+                'CE': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio'], tipoDocumentoOrigem: '22' },
+                'DF': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '22' },
                 'ES': { portalGNRE: false, receitas: [], camposManuais: [], tipoDocumentoOrigem: '10' },
-                'GO': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'numeroControle'], tipoDocumentoOrigem: '10' },
-                'MA': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'detalhamentoReceita'], tipoDocumentoOrigem: '10' },
-                'MT': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'numeroControle', 'detalhamentoReceita'], tipoDocumentoOrigem: '10' },
-                'MS': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio'], tipoDocumentoOrigem: '10' },
-                'MG': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'detalhamentoReceita'], tipoDocumentoOrigem: '10' },
-                'PA': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'detalhamentoReceita'], tipoDocumentoOrigem: '10' },
-                'PB': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '10' },
-                'PR': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'numeroControle'], tipoDocumentoOrigem: '10' },
-                'PE': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '10' },
-                'PI': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio'], tipoDocumentoOrigem: '10' },
+                'GO': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'numeroControle'], tipoDocumentoOrigem: '22' },
+                'MA': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '22' },
+                'MT': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'numeroControle'], tipoDocumentoOrigem: '22' },
+                'MS': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio'], tipoDocumentoOrigem: '22' },
+                'MG': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '55' },
+                'PA': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio'], tipoDocumentoOrigem: '22' },
+                'PB': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '22' },
+                'PR': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'numeroControle'], tipoDocumentoOrigem: '22' },
+                'PE': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '22' },
+                'PI': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio'], tipoDocumentoOrigem: '22' },
                 'RJ': { portalGNRE: false, receitas: [], camposManuais: [], tipoDocumentoOrigem: '10' },
-                'RN': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'detalhamentoReceita'], tipoDocumentoOrigem: '10' },
-                'RS': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'numeroControle'], tipoDocumentoOrigem: '10' },
-                'RO': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'detalhamentoReceita'], tipoDocumentoOrigem: '10' },
-                'RR': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio'], tipoDocumentoOrigem: '10' },
-                'SC': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'numeroControle'], tipoDocumentoOrigem: '10' },
+                'RN': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '22' },
+                'RS': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'numeroControle'], tipoDocumentoOrigem: '22' },
+                'RO': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '22' },
+                'RR': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio'], tipoDocumentoOrigem: '22' },
+                'SC': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'numeroControle'], tipoDocumentoOrigem: '22' },
                 'SP': { portalGNRE: false, receitas: [], camposManuais: [], tipoDocumentoOrigem: '10' },
-                'SE': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '10' },
-                'TO': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio', 'detalhamentoReceita'], tipoDocumentoOrigem: '10' }
+                'SE': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto'], tipoDocumentoOrigem: '22' },
+                'TO': { portalGNRE: true, receitas: ['100099', '100102', '100129'], camposManuais: ['produto', 'convenio'], tipoDocumentoOrigem: '22' }
             };
         }
 
